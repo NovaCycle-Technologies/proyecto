@@ -50,7 +50,18 @@ class ControladorUsuarios
         if ($rol === null) {
             return ['ok' => false, 'mensaje' => 'La cuenta aprobada no tiene un rol asignado.'];
         }
-        return ['ok' => true, 'mensaje' => 'Sesión iniciada correctamente.', 'usuario' => ['ci' => $usuario['CI'], 'nombre' => $usuario['Nombre'], 'rol' => $rol]];
+        $destinos = [
+            'admin_municipal' => 'admin.html',
+            'peon' => 'cuadrilla.html',
+            'conductor' => 'cuadrilla.html',
+            'operario' => 'operario.html'
+        ];
+        return [
+            'ok' => true,
+            'mensaje' => 'Sesión iniciada correctamente.',
+            'usuario' => ['ci' => $usuario['CI'], 'nombre' => $usuario['Nombre'], 'rol' => $rol],
+            'destino' => $destinos[$rol] ?? 'index.html'
+        ];
     }
 
     public function listarPendientes(): array

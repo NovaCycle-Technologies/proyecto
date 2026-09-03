@@ -36,7 +36,10 @@ class ModeloUsuarios
 
     public function obtenerRol(string $ci): ?string
     {
-        $tablas = ['admin_municipal' => 'admins', 'operario' => 'operarios', 'peon' => 'peones', 'conductor' => 'conductores'];
+        // Peón y conductor también pueden estar asociados a una cuadrilla de
+        // operarios. Se buscan primero sus roles específicos para no perder
+        // el destino correcto al iniciar sesión.
+        $tablas = ['admin_municipal' => 'admins', 'peon' => 'peones', 'conductor' => 'conductores', 'operario' => 'operarios'];
         foreach ($tablas as $rol => $tabla) {
             $consulta = $this->conexion->prepare("SELECT ci FROM {$tabla} WHERE ci = ?");
             $consulta->execute([$ci]);
@@ -69,16 +72,13 @@ class ModeloUsuarios
                 $this->conexion->rollBack();
                 return false;
             }
-            if ($rol === 'operario') {
-                $agregar = $this->conexion->prepare('INSERT INTO operarios (ci) VALUES (?)');
-                $agregar->execute([$ci]);
-            } else {
-                $operario = $this->conexion->prepare('INSERT INTO operarios (ci) VALUES (?)');
-                $operario->execute([$ci]);
-                $tabla = $rol === 'peon' ? 'peones' : 'conductores';
-                $agregar = $this->conexion->prepare("INSERT INTO {$tabla} (ci) VALUES (?)");
-                $agregar->execute([$ci]);
-            }
+            $tabla = match ($rol) {
+                'operario' => 'operarios',
+                'peon' => 'peones',
+                'conductor' => 'conductores'
+            };
+            $agregar = $this->conexion->prepare("INSERT INTO {$tabla} (ci) VALUES (?)");
+            $agregar->execute([$ci]);
             $this->conexion->commit();
             return true;
         } catch (Throwable $error) {
