@@ -137,6 +137,20 @@
         <tbody></tbody>
       </table>
     </section>
+
+    <section id="rutas">
+      <h2>Rutas y cuadrillas</h2>
+      <p>Creá una ruta, agregá sus paradas y asigná el camión y trabajadores para la jornada.</p>
+      <form id="formRuta"><label for="nombreRutaAdmin">Nombre de ruta</label><input id="nombreRutaAdmin" required placeholder="Ej.: Ruta Centro 04"><label for="zonaRutaAdmin">Zona</label><input id="zonaRutaAdmin" required placeholder="Ej.: Centro"><button type="submit">Crear ruta</button></form>
+      <form id="formParada"><label for="rutaParada">Ruta</label><select id="rutaParada" required></select><label for="ubicacionParada">Ubicación</label><input id="ubicacionParada" required><label for="descripcionParada">Descripción</label><input id="descripcionParada" value="Contenedores"><label for="ordenParada">Orden</label><input id="ordenParada" type="number" min="1" value="1"><button type="submit">Agregar parada</button></form>
+      <form id="formAsignacion"><label for="rutaAsignacion">Ruta</label><select id="rutaAsignacion" required></select><label for="camionAsignacion">Camión</label><select id="camionAsignacion" required></select><label for="conductorAsignacion">Conductor</label><select id="conductorAsignacion" required></select><label for="peonAsignacion">Peón</label><select id="peonAsignacion" required></select><label for="fechaAsignacion">Fecha</label><input id="fechaAsignacion" type="date" required><button type="submit">Asignar cuadrilla</button></form>
+      <p id="mensajeRutas" class="mensaje"></p>
+    </section>
+
+    <section id="reportes">
+      <h2>Reporte de hoy</h2>
+      <p id="reporteAdmin" class="mensaje">Cargando reporte...</p>
+    </section>
   </main>
 
   <script>
@@ -548,5 +562,6 @@
     cargarContenedores();
     cargarCamiones();
   </script>
+  <script src="admin-operaciones.js"></script>
 </body>
 </html>

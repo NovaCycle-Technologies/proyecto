@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Operario | NovaCycle Tech</title>
+  <link rel="stylesheet" href="operario.css">
+</head>
+<body>
+  <header class="barra-superior">
+    <div><strong>♻ NovaCycle Tech</strong><span>Gestión de residuos urbanos</span></div>
+    <a href="index.html">Cerrar sesión</a>
+  </header>
+  <main>
+    <p class="etiqueta">PANEL DE OPERARIO</p>
+    <h1 id="saludo">Centro de acopio</h1>
+    <p class="descripcion">Controlá el ingreso de residuos, el estado de la maquinaria y las tareas de la cuadrilla.</p>
+    <section class="resumen">
+      <article><span>Ingresos de hoy</span><strong id="totalIngresos">0 kg</strong><small id="camionesRecibidos">0 camiones recibidos</small></article>
+      <article><span>Capacidad utilizada</span><strong>68%</strong><small>Centro de acopio Norte</small></article>
+      <article><span>Incidencias activas</span><strong id="totalIncidencias">0</strong><small>Pendientes de revisión</small></article>
+    </section>
+    <div class="dos-columnas">
+      <section class="panel">
+        <h2>Registrar ingreso de residuos</h2><p>Registrá la carga que llega al centro de acopio.</p>
+        <form id="formIngreso">
+          <label for="camion">Camión</label><select id="camion" required></select>
+          <label for="tipoResiduo">Tipo de residuo</label><select id="tipoResiduo" required><option>Residuos comunes</option><option>Reciclables</option><option>Vidrio</option></select>
+          <label for="peso">Peso recibido (kg)</label><input id="peso" type="number" min="1" required placeholder="Ej.: 2500">
+          <button type="submit">Registrar ingreso</button>
+        </form>
+      </section>
+      <section class="panel">
+        <h2>Estado de la maquinaria</h2><p>Informá cualquier cambio para que el equipo esté al tanto.</p>
+        <form id="formMaquinaria">
+          <label for="maquinaria">Equipo</label><select id="maquinaria"><option>Compactadora 01</option><option>Cinta transportadora 02</option><option>Prensa hidráulica 01</option></select>
+          <label for="estadoMaquinaria">Estado</label><select id="estadoMaquinaria"><option>Operativa</option><option>Requiere mantenimiento</option><option>Fuera de servicio</option></select>
+          <label for="observacion">Observación</label><textarea id="observacion" placeholder="Detalle opcional"></textarea>
+          <button type="submit">Actualizar maquinaria</button>
+        </form>
+      </section>
+    </div>
+    <section class="panel">
+      <div class="titulo-seccion"><div><h2>Cuadrillas y rutas asignadas</h2><p>Seguimiento de los equipos que reportan al centro.</p></div><span>Turno mañana</span></div>
+      <div class="tabla-contenedor"><table><thead><tr><th>Camión</th><th>Modelo</th><th>Estado</th></tr></thead><tbody id="tablaCamiones"><tr><td colspan="3">Cargando camiones...</td></tr></tbody></table></div>
+    </section>
+    <section class="panel">
+      <h2>Incidencias a revisar</h2>
+      <ul id="listaIncidencias" class="incidencias"><li>Cargando incidencias...</li></ul>
+    </section>
+  </main>
+  <script src="operario.js"></script>
+</body>
+</html>
