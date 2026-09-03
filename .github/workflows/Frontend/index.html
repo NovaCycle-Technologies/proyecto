@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NovaCycle Tech</title>
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body class="body">
+  <header class="navbar">
+    <div class="nombrenb">
+      <span class="icono-reciclaje">♻</span>
+      <div class="brand-texto">
+        <span class="brand-nombre">NovaCycle Tech</span>
+        <span class="brand-subnombre">Gestión de residuos urbanos</span>
+      </div>
+      <div class="menu">
+        <button type="button" data-seccion="roles">Roles</button>
+        <button type="button" data-seccion="funcionalidades">Funcionalidades</button>
+        <button type="button" data-seccion="nosotros">Acerca de nosotros</button>
+      </div>
+    </div>
+    <div class="botoneslog">
+      <a href="login.html"><button>Iniciar sesión</button></a>
+      <a href="registro.html"><button>Registrarse</button></a>
+    </div>
+  </header>
+
+
+  <main>
+    
+    <div class="imgfondo">
+    <div class="contenido_principal">
+      <span class="bienvenida">Bienvenido a NovaCycle Tech</span>
+      <p class="descripcionb">NovaCycle centraliza la administración de contenedores, incidencias, flotas de recolección y reportes estadísticos para una gestión municipal más eficiente.</p>
+    </div>
+
+    <div class="Botones_principal">
+      <a href="registro.html"><button>Crear cuenta →</button></a>
+      <a href="login.html"><button>Iniciar sesión</button></a>
+    </div>
+</div>
+    
+    <section id="roles" class="seccion" >
+      <h2>Roles del sistema</h2>
+      <div class="bloque"><h3>Administrador municipal</h3><p>Gestiona usuarios, recursos, rutas, incidencias y reportes generales del sistema.</p></div>
+      <div class="bloque"><h3>Peón de recolección</h3><p>Integra la cuadrilla, registra tareas realizadas y reporta incidencias durante la recolección.</p></div>
+      <div class="bloque"><h3>Conductor</h3><p>Integra la cuadrilla, consulta rutas asignadas y reporta el estado del camión.</p></div>
+      <div class="bloque"><h3>Operario</h3><p>Gestiona el ingreso de residuos, la capacidad y la maquinaria del vertedero o centro de acopio.</p></div>
+    </section>
+
+    <section id="funcionalidades" class="seccion" >
+      <h2>Funcionalidades</h2>
+      <div class="bloque"><h3>Gestión de contenedores</h3><p>Registro de ubicación, tipo y estado de los contenedores.</p></div>
+      <div class="bloque"><h3>Incidencias</h3><p>Registro y seguimiento de roturas, desbordes y falta de recolección.</p></div>
+      <div class="bloque"><h3>Rutas y vehículos</h3><p>Asignación de rutas y control básico de la flota de recolección.</p></div>
+      <div class="bloque"><h3>Reportes</h3><p>Información para conocer incidencias abiertas, zonas críticas y tareas realizadas.</p></div>
+    </section>
+
+    <section id="nosotros" class="seccion" >
+      <h2>Acerca de nosotros</h2>
+      <div class="bloque"><h3>Nuestra propuesta</h3><p>NovaCycle Tech es una plataforma para apoyar la gestión de residuos urbanos y mejorar la comunicación entre la comunidad, las cuadrillas y la administración municipal.</p></div>
+      <div class="bloque"><h3>Objetivo</h3><p>Facilitar una ciudad más limpia mediante información organizada, seguimiento de incidencias y una recolección más eficiente.</p></div>
+    </section>
+  </main>
+
+  <script>
+    const botones = document.querySelectorAll('[data-seccion]');
+    const secciones = document.querySelectorAll('.seccion');
+
+    botones.forEach(function (boton) {
+      boton.addEventListener('click', function () {
+        const seccionElegida = document.getElementById(boton.dataset.seccion);
+        seccionElegida.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  </script>
+</body>
+</html>

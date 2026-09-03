@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi cuadrilla | NovaCycle Tech</title>
+  <link rel="stylesheet" href="cuadrilla.css">
+</head>
+<body>
+  <header class="barra-superior">
+    <div>
+      <strong>♻ NovaCycle Tech</strong>
+      <span>Gestión de residuos urbanos</span>
+    </div>
+    <a href="index.html">Cerrar sesión</a>
+  </header>
+
+  <main>
+    <p class="etiqueta">PANEL DE CUADRILLA</p>
+    <h1 id="saludo">Mi jornada</h1>
+    <p id="descripcionRol" class="descripcion">Consultá tu recorrido y registrá las tareas de la jornada.</p>
+
+    <section class="resumen" aria-label="Resumen de la jornada">
+      <article><span>Ruta asignada</span><strong id="nombreRuta">Cargando...</strong><small id="zonaRuta">Consultando asignación</small></article>
+      <article><span>Camión</span><strong id="camionAsignado">Cargando...</strong><small id="estadoCamionResumen">Consultando flota</small></article>
+      <article><span>Paradas</span><strong id="paradasPendientes">-</strong><small id="detalleParadas">-</small></article>
+    </section>
+
+    <section class="panel">
+      <div class="titulo-seccion"><div><h2>Recorrido de hoy</h2><p>Marcá una parada cuando la recolección esté terminada.</p></div><span id="progreso">0 / 0</span></div>
+      <ol id="listaParadas" class="paradas"><li>Cargando ruta...</li></ol>
+    </section>
+
+    <div class="dos-columnas">
+      <section class="panel">
+        <h2>Registrar incidencia</h2>
+        <p>Informá una rotura, desborde o problema durante el recorrido.</p>
+        <form id="formIncidencia">
+          <label for="ubicacion">Ubicación</label>
+          <input id="ubicacion" required placeholder="Ej.: Yaguarón y Uruguay">
+          <label for="tipoIncidencia">Tipo de incidencia</label>
+          <select id="tipoIncidencia" required><option value="Desborde">Desborde</option><option value="Contenedor roto">Contenedor roto</option><option value="No se pudo recolectar">No se pudo recolectar</option></select>
+          <label for="detalle">Detalle</label>
+          <textarea id="detalle" required placeholder="Describí brevemente lo ocurrido"></textarea>
+          <button type="submit">Enviar incidencia</button>
+        </form>
+      </section>
+
+      <section id="panelCamion" class="panel" hidden>
+        <h2>Estado del camión</h2>
+        <p>Como conductor podés informar el estado actual del vehículo.</p>
+        <form id="formCamion">
+          <label for="estadoCamion">Estado</label>
+          <select id="estadoCamion"><option value="disponible">Operativo</option><option value="en_mantenimiento">Requiere revisión</option><option value="fuera_de_servicio">Fuera de servicio</option></select>
+          <label for="observacionCamion">Observación</label>
+          <textarea id="observacionCamion" placeholder="Ej.: ruido en el sistema hidráulico"></textarea>
+          <button type="submit">Actualizar estado</button>
+        </form>
+      </section>
+    </div>
+  </main>
+  <script src="cuadrilla.js"></script>
+</body>
+</html>

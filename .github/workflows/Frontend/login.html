@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaCycle Tech | Inicio de sesión</title>
+</head>
+<body>
+    <div class="login">
+        <h1>Inicio de sesión</h1>
+        <p>Por favor, ingrese sus credenciales para iniciar sesión.</p>
+        <form id="formLogin">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required><br><br>
+
+            <label for="password">Contraseña:</label>
+            <input type="password" id="password" name="password" required><br><br>
+
+            <input type="submit" value="Iniciar sesión">
+        </form>
+        <p id="mensajeLogin" role="alert" hidden></p>
+    </div>
+    <script src="auth.js?v=2"></script>
+</body>
+</html>

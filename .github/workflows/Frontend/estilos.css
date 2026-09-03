@@ -1,0 +1,197 @@
+.body {
+  margin: 0;
+  background-color: #F4F8F1;
+  font-family: Arial, sans-serif;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 32px;
+  border-bottom: 1px solid #666069;
+}
+
+.nombrenb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icono-reciclaje {
+  color: white;
+  background-color: green;
+  padding: 5px;
+}
+
+.brand-texto {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-nombre {
+  color: green;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.brand-subnombre {
+  color: #555;
+  font-size: 14px;
+}
+
+.menu {
+  display: flex;
+  gap: 22px;
+  margin-left: 60px;
+}
+
+.menu button {
+  background: none;
+  border: none;
+  color: #555;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.menu button:hover {
+  color: black;
+}
+
+.botoneslog {
+  display: flex;
+  gap: 10px;
+}
+
+.botoneslog button,
+.Botones_principal button {
+  border: 1px solid;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 10px 20px;
+}
+
+.botoneslog a:first-child button,
+.Botones_principal a:last-child button {
+  background: transparent;
+}
+
+.botoneslog a:last-child button,
+.Botones_principal a:first-child button {
+  background: green;
+  color: white;
+}
+
+.imgfondo {
+  position: relative;
+  min-height: 600px;
+  background-image: url('https://montevideo.gub.uy/sites/default/files/biblioteca/20230419dicimouysm11956.jpg');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.imgfondo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 35, 17, 0.57);
+}
+
+.contenido_principal,
+.Botones_principal {
+  position: relative;
+  z-index: 1;
+}
+
+.contenido_principal {
+  padding: 90px 44px 0;
+}
+
+.bienvenida {
+  color: #ffffff;
+  display: block;
+  font-size: 36px;
+  font-weight: bold;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.65);
+}
+
+.descripcionb {
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.5;
+  max-width: 700px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.75);
+}
+
+.Botones_principal {
+  display: flex;
+  gap: 12px;
+  padding: 20px 44px 0;
+}
+
+.Botones_principal button {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.38);
+}
+
+.Botones_principal a:last-child button {
+  background: #ffffff;
+  color: #153d23;
+  border-color: #ffffff;
+}
+
+.seccion {
+  margin: 35px 44px;
+  padding: 22px;
+  border-top: 1px solid #a5afa4;
+}
+
+#roles {
+  margin-top: 35px;
+}
+
+.seccion h2 {
+  color: green;
+  margin-top: 0;
+}
+
+.bloque {
+  margin-top: 14px;
+  padding: 8px 0 16px;
+  border-bottom: 1px solid #b7cbb5;
+}
+
+.bloque h3 {
+  margin: 0 0 8px;
+}
+
+.bloque p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+@media (max-width: 850px) {
+  .navbar,
+  .nombrenb {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .menu {
+    flex-wrap: wrap;
+    margin-left: 0;
+  }
+
+  .contenido_principal,
+  .Botones_principal,
+  .seccion {
+    margin-left: 20px;
+    margin-right: 20px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}

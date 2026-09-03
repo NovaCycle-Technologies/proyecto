@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administración | NovaCycle Tech</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+
+<body>
+  <header>
+    <div>
+      <strong>NovaCycle Tech</strong>
+      <span>Panel de administración municipal</span>
+    </div>
+
+    <a href="index.html">Volver al inicio</a>
+  </header>
+
+  <main>
+    <h1>Panel de administración</h1>
+    <p class="descripcion">Administrá usuarios, contenedores y camiones del sistema.</p>
+
+    <section id="usuarios">
+      <h2>Solicitudes de usuarios</h2>
+      <p>Aprobá a los trabajadores pendientes y confirmá el puesto que tendrán en el sistema.</p>
+
+      <p id="mensajeUsuarios" class="mensaje">Cargando solicitudes...</p>
+
+      <table id="tablaUsuarios" hidden>
+        <thead>
+          <tr>
+            <th>CI</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Puesto solicitado</th>
+            <th>Rol final</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section id="contenedores">
+      <h2>Gestión de contenedores</h2>
+      <p>Creá, modificá o da de baja contenedores.</p>
+
+      <form id="formContenedor">
+        <input type="hidden" id="idContenedor">
+
+        <label for="calle">Calle</label>
+        <input type="text" id="calle" required>
+
+        <label for="numero">Número</label>
+        <input type="text" id="numero" required>
+
+        <label for="estado">Estado</label>
+        <select id="estado" required>
+          <option value="funcional">Funcional</option>
+          <option value="roto">Roto</option>
+          <option value="desbordado">Desbordado</option>
+        </select>
+
+        <label for="tipoResiduo">Tipo de contenedor</label>
+        <select id="tipoResiduo" required>
+          <option value="" selected disabled>Seleccioná un tipo</option>
+          <option value="Residuos comunes">Residuos comunes</option>
+          <option value="Reciclaje">Reciclaje</option>
+          <option value="Vidrio">Vidrio</option>
+        </select>
+
+        <label for="capacidad">Capacidad en litros</label>
+        <input type="number" id="capacidad" min="1" required>
+
+        <button type="submit" id="btnGuardar">Crear contenedor</button>
+        <button type="button" id="btnCancelar" hidden>Cancelar edición</button>
+      </form>
+
+      <p id="mensajeContenedores" class="mensaje">Cargando contenedores...</p>
+
+      <table id="tablaContenedores" hidden>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Ubicación</th>
+            <th>Estado</th>
+            <th>Residuo</th>
+            <th>Capacidad</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section id="camiones">
+      <h2>Gestión de camiones</h2>
+      <p>Registrá, modificá o da de baja los camiones de recolección.</p>
+
+      <form id="formCamion">
+        <input type="hidden" id="idCamion">
+
+        <label for="matricula">Matrícula</label>
+        <input type="text" id="matricula" placeholder="Ejemplo: SAA 1234" required>
+
+        <label for="modelo">Modelo</label>
+        <input type="text" id="modelo" placeholder="Ejemplo: Iveco Tector" required>
+
+        <label for="capacidadKg">Capacidad en kg</label>
+        <input type="number" id="capacidadKg" min="1" required>
+
+        <label for="estadoCamion">Estado</label>
+        <select id="estadoCamion" required>
+          <option value="disponible">Disponible</option>
+          <option value="en_mantenimiento">En mantenimiento</option>
+          <option value="fuera_de_servicio">Fuera de servicio</option>
+        </select>
+
+        <button type="submit" id="btnGuardarCamion">Registrar camión</button>
+        <button type="button" id="btnCancelarCamion" hidden>Cancelar edición</button>
+      </form>
+
+      <p id="mensajeCamiones" class="mensaje">Cargando camiones...</p>
+
+      <table id="tablaCamiones" hidden>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Matrícula</th>
+            <th>Modelo</th>
+            <th>Capacidad</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section id="rutas">
+      <h2>Rutas y cuadrillas</h2>
+      <p>Creá una ruta, agregá sus paradas y asigná el camión y trabajadores para la jornada.</p>
+      <form id="formRuta"><label for="nombreRutaAdmin">Nombre de ruta</label><input id="nombreRutaAdmin" required placeholder="Ej.: Ruta Centro 04"><label for="zonaRutaAdmin">Zona</label><input id="zonaRutaAdmin" required placeholder="Ej.: Centro"><button type="submit">Crear ruta</button></form>
+      <form id="formParada"><label for="rutaParada">Ruta</label><select id="rutaParada" required></select><label for="ubicacionParada">Ubicación</label><input id="ubicacionParada" required><label for="descripcionParada">Descripción</label><input id="descripcionParada" value="Contenedores"><label for="ordenParada">Orden</label><input id="ordenParada" type="number" min="1" value="1"><button type="submit">Agregar parada</button></form>
+      <form id="formAsignacion"><label for="rutaAsignacion">Ruta</label><select id="rutaAsignacion" required></select><label for="camionAsignacion">Camión</label><select id="camionAsignacion" required></select><label for="conductorAsignacion">Conductor</label><select id="conductorAsignacion" required></select><label for="peonAsignacion">Peón</label><select id="peonAsignacion" required></select><label for="fechaAsignacion">Fecha</label><input id="fechaAsignacion" type="date" required><button type="submit">Asignar cuadrilla</button></form>
+      <p id="mensajeRutas" class="mensaje"></p>
+    </section>
+
+    <section id="reportes">
+      <h2>Reporte de hoy</h2>
+      <p id="reporteAdmin" class="mensaje">Cargando reporte...</p>
+    </section>
+  </main>
+
+  <script>
+    const apiUsuarios =
+      "/Proyecto/proyecto/.github/workflows/Api_Usuarios/vista.php";
+
+    const apiGestion =
+      "/Proyecto/proyecto/.github/workflows/Api_Gestion/vista.php";
+
+    const apiCamiones =
+      "/Proyecto/proyecto/.github/workflows/Api_Camiones/vista.php";
+
+    const tablaUsuarios = document.getElementById("tablaUsuarios");
+    const cuerpoUsuarios = tablaUsuarios.querySelector("tbody");
+    const mensajeUsuarios = document.getElementById("mensajeUsuarios");
+
+    const tablaContenedores = document.getElementById("tablaContenedores");
+    const cuerpoContenedores = tablaContenedores.querySelector("tbody");
+    const mensajeContenedores = document.getElementById("mensajeContenedores");
+
+    const formulario = document.getElementById("formContenedor");
+    const idContenedor = document.getElementById("idContenedor");
+    const btnGuardar = document.getElementById("btnGuardar");
+    const btnCancelar = document.getElementById("btnCancelar");
+
+    const tablaCamiones = document.getElementById("tablaCamiones");
+    const cuerpoCamiones = tablaCamiones.querySelector("tbody");
+    const mensajeCamiones = document.getElementById("mensajeCamiones");
+
+    const formularioCamion = document.getElementById("formCamion");
+    const idCamion = document.getElementById("idCamion");
+    const btnGuardarCamion = document.getElementById("btnGuardarCamion");
+    const btnCancelarCamion = document.getElementById("btnCancelarCamion");
+
+    function textoSeguro(texto) {
+      const elemento = document.createElement("div");
+      elemento.textContent = texto;
+      return elemento.innerHTML;
+    }
+
+    function nombreRol(rol) {
+      const nombres = {
+        peon: "Peón",
+        conductor: "Conductor",
+        operario: "Operario"
+      };
+
+      return nombres[rol] || rol;
+    }
+
+    async function cargarPendientes() {
+      try {
+        const respuesta = await fetch(
+          apiUsuarios + "?accion=listar_pendientes",
+          {
+            method: "POST",
+            headers: { "Accept": "application/json" }
+          }
+        );
+
+        const datos = await respuesta.json();
+
+        if (!respuesta.ok || !datos.ok) {
+          mensajeUsuarios.textContent =
+            datos.mensaje || "No tienes permiso para ver esta página.";
+          return;
+        }
+
+        cuerpoUsuarios.innerHTML = "";
+
+        if (datos.usuarios.length === 0) {
+          mensajeUsuarios.textContent = "No hay solicitudes pendientes.";
+          tablaUsuarios.hidden = true;
+          return;
+        }
+
+        mensajeUsuarios.textContent = "";
+        tablaUsuarios.hidden = false;
+
+        datos.usuarios.forEach(function (usuario) {
+          const fila = document.createElement("tr");
+
+          fila.innerHTML = `
+            <td>${textoSeguro(usuario.ci)}</td>
+            <td>${textoSeguro(usuario.nombre)} ${textoSeguro(usuario.apellido)}</td>
+            <td>${textoSeguro(usuario.email)}</td>
+            <td>${nombreRol(usuario.rol_solicitado)}</td>
+            <td>
+              <select>
+                <option value="peon">Peón</option>
+                <option value="conductor">Conductor</option>
+                <option value="operario">Operario</option>
+              </select>
+            </td>
+            <td><button type="button">Aprobar</button></td>
+          `;
+
+          const selector = fila.querySelector("select");
+          selector.value = usuario.rol_solicitado;
+
+          fila.querySelector("button").addEventListener("click", function () {
+            aprobarUsuario(usuario.ci, selector.value);
+          });
+
+          cuerpoUsuarios.appendChild(fila);
+        });
+      } catch (error) {
+        mensajeUsuarios.textContent = "No se pudo conectar con la API.";
+      }
+    }
+
+    async function aprobarUsuario(ci, rol) {
+      const datosFormulario = new FormData();
+      datosFormulario.append("ci", ci);
+      datosFormulario.append("rol", rol);
+
+      const respuesta = await fetch(
+        apiUsuarios + "?accion=aprobar_usuario",
+        {
+          method: "POST",
+          headers: { "Accept": "application/json" },
+          body: datosFormulario
+        }
+      );
+
+      const datos = await respuesta.json();
+      mensajeUsuarios.textContent = datos.mensaje;
+      cargarPendientes();
+    }
+
+    async function cargarContenedores() {
+      try {
+        const respuesta = await fetch(apiGestion + "?accion=listar");
+        const datos = await respuesta.json();
+
+        if (!respuesta.ok || !datos.ok) {
+          mensajeContenedores.textContent =
+            datos.mensaje || "No se pudieron cargar los contenedores.";
+          return;
+        }
+
+        cuerpoContenedores.innerHTML = "";
+
+        if (datos.contenedores.length === 0) {
+          mensajeContenedores.textContent = "No hay contenedores registrados.";
+          tablaContenedores.hidden = true;
+          return;
+        }
+
+        mensajeContenedores.textContent = "";
+        tablaContenedores.hidden = false;
+
+        datos.contenedores.forEach(function (contenedor) {
+          const fila = document.createElement("tr");
+
+          fila.innerHTML = `
+            <td>${contenedor.id_contenedor}</td>
+            <td>${textoSeguro(contenedor.calle)} ${textoSeguro(contenedor.numero)}</td>
+            <td>${textoSeguro(contenedor.estado)}</td>
+            <td>${textoSeguro(contenedor.tipo_residuo)}</td>
+            <td>${contenedor.capacidad_litros} L</td>
+            <td>
+              <button type="button" class="editar">Editar</button>
+              <button type="button" class="baja">Dar de baja</button>
+            </td>
+          `;
+
+          fila.querySelector(".editar").addEventListener("click", function () {
+            editarContenedor(contenedor);
+          });
+
+          fila.querySelector(".baja").addEventListener("click", function () {
+            bajaContenedor(contenedor.id_contenedor);
+          });
+
+          cuerpoContenedores.appendChild(fila);
+        });
+      } catch (error) {
+        mensajeContenedores.textContent =
+          "No se pudo conectar con la API de Gestión.";
+      }
+    }
+
+    formulario.addEventListener("submit", async function (evento) {
+      evento.preventDefault();
+
+      const datos = {
+        calle: document.getElementById("calle").value,
+        numero: document.getElementById("numero").value,
+        estado: document.getElementById("estado").value,
+        tipo_residuo: document.getElementById("tipoResiduo").value,
+        capacidad_litros: document.getElementById("capacidad").value
+      };
+
+      const editando = idContenedor.value !== "";
+
+      const url = editando
+        ? apiGestion + "?accion=actualizar&id=" + idContenedor.value
+        : apiGestion + "?accion=crear";
+
+      const opciones = editando
+        ? {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(datos)
+          }
+        : {
+            method: "POST",
+            body: new URLSearchParams(datos)
+          };
+
+      const respuesta = await fetch(url, opciones);
+      const resultado = await respuesta.json();
+
+      mensajeContenedores.textContent = resultado.mensaje;
+
+      if (resultado.ok) {
+        limpiarFormulario();
+        cargarContenedores();
+      }
+    });
+
+    function editarContenedor(contenedor) {
+      idContenedor.value = contenedor.id_contenedor;
+      document.getElementById("calle").value = contenedor.calle;
+      document.getElementById("numero").value = contenedor.numero;
+      document.getElementById("estado").value = contenedor.estado;
+      document.getElementById("tipoResiduo").value = contenedor.tipo_residuo;
+      document.getElementById("capacidad").value = contenedor.capacidad_litros;
+
+      btnGuardar.textContent = "Guardar cambios";
+      btnCancelar.hidden = false;
+
+      formulario.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function limpiarFormulario() {
+      formulario.reset();
+      idContenedor.value = "";
+      btnGuardar.textContent = "Crear contenedor";
+      btnCancelar.hidden = true;
+    }
+
+    btnCancelar.addEventListener("click", limpiarFormulario);
+
+    async function bajaContenedor(id) {
+      if (!confirm("¿Querés dar de baja este contenedor?")) {
+        return;
+      }
+
+      const respuesta = await fetch(
+        apiGestion + "?accion=baja&id=" + id,
+        { method: "DELETE" }
+      );
+
+      const resultado = await respuesta.json();
+      mensajeContenedores.textContent = resultado.mensaje;
+
+      if (resultado.ok) {
+        cargarContenedores();
+      }
+    }
+
+    function nombreEstadoCamion(estado) {
+      const nombres = {
+        disponible: "Disponible",
+        en_mantenimiento: "En mantenimiento",
+        fuera_de_servicio: "Fuera de servicio"
+      };
+
+      return nombres[estado] || estado;
+    }
+
+    async function cargarCamiones() {
+      try {
+        const respuesta = await fetch(apiCamiones + "?accion=listar");
+        const datos = await respuesta.json();
+
+        if (!respuesta.ok || !datos.ok) {
+          mensajeCamiones.textContent =
+            datos.mensaje || "No se pudieron cargar los camiones.";
+          return;
+        }
+
+        cuerpoCamiones.innerHTML = "";
+
+        if (datos.camiones.length === 0) {
+          mensajeCamiones.textContent = "No hay camiones registrados.";
+          tablaCamiones.hidden = true;
+          return;
+        }
+
+        mensajeCamiones.textContent = "";
+        tablaCamiones.hidden = false;
+
+        datos.camiones.forEach(function (camion) {
+          const fila = document.createElement("tr");
+
+          fila.innerHTML = `
+            <td>${camion.id_camion}</td>
+            <td>${textoSeguro(camion.matricula)}</td>
+            <td>${textoSeguro(camion.modelo)}</td>
+            <td>${camion.capacidad_kg} kg</td>
+            <td>${nombreEstadoCamion(camion.estado)}</td>
+            <td>
+              <button type="button" class="editarCamion">Editar</button>
+              <button type="button" class="bajaCamion">Dar de baja</button>
+            </td>
+          `;
+
+          fila.querySelector(".editarCamion").addEventListener("click", function () {
+            editarCamion(camion);
+          });
+
+          fila.querySelector(".bajaCamion").addEventListener("click", function () {
+            bajaCamion(camion.id_camion);
+          });
+
+          cuerpoCamiones.appendChild(fila);
+        });
+      } catch (error) {
+        mensajeCamiones.textContent =
+          "No se pudo conectar con la API de Camiones.";
+      }
+    }
+
+    formularioCamion.addEventListener("submit", async function (evento) {
+      evento.preventDefault();
+
+      const datos = {
+        matricula: document.getElementById("matricula").value,
+        modelo: document.getElementById("modelo").value,
+        capacidad_kg: document.getElementById("capacidadKg").value,
+        estado: document.getElementById("estadoCamion").value
+      };
+
+      const editando = idCamion.value !== "";
+
+      const url = editando
+        ? apiCamiones + "?accion=actualizar&id=" + idCamion.value
+        : apiCamiones + "?accion=crear";
+
+      const opciones = editando
+        ? {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(datos)
+          }
+        : {
+            method: "POST",
+            body: new URLSearchParams(datos)
+          };
+
+      const respuesta = await fetch(url, opciones);
+      const resultado = await respuesta.json();
+
+      mensajeCamiones.textContent = resultado.mensaje;
+
+      if (resultado.ok) {
+        limpiarFormularioCamion();
+        cargarCamiones();
+      }
+    });
+
+    function editarCamion(camion) {
+      idCamion.value = camion.id_camion;
+      document.getElementById("matricula").value = camion.matricula;
+      document.getElementById("modelo").value = camion.modelo;
+      document.getElementById("capacidadKg").value = camion.capacidad_kg;
+      document.getElementById("estadoCamion").value = camion.estado;
+
+      btnGuardarCamion.textContent = "Guardar cambios";
+      btnCancelarCamion.hidden = false;
+
+      formularioCamion.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+
+    function limpiarFormularioCamion() {
+      formularioCamion.reset();
+      idCamion.value = "";
+      btnGuardarCamion.textContent = "Registrar camión";
+      btnCancelarCamion.hidden = true;
+    }
+
+    btnCancelarCamion.addEventListener("click", limpiarFormularioCamion);
+
+    async function bajaCamion(id) {
+      if (!confirm("¿Querés dar de baja este camión?")) {
+        return;
+      }
+
+      const respuesta = await fetch(
+        apiCamiones + "?accion=baja&id=" + id,
+        { method: "DELETE" }
+      );
+
+      const resultado = await respuesta.json();
+      mensajeCamiones.textContent = resultado.mensaje;
+
+      if (resultado.ok) {
+        cargarCamiones();
+      }
+    }
+
+    cargarPendientes();
+    cargarContenedores();
+    cargarCamiones();
+  </script>
+  <script src="admin-operaciones.js"></script>
+</body>
+</html>
