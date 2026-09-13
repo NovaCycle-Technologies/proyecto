@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NovaCycle Tech</title>
   <link rel="stylesheet" href="estilos.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 </head>
 <body class="body">
   <header class="navbar">
@@ -17,6 +18,7 @@
       <div class="menu">
         <button type="button" data-seccion="roles">Roles</button>
         <button type="button" data-seccion="funcionalidades">Funcionalidades</button>
+        <button type="button" data-seccion="mapa-rutas">Mapa de rutas</button>
         <button type="button" data-seccion="nosotros">Acerca de nosotros</button>
       </div>
     </div>
@@ -40,6 +42,28 @@
       <a href="login.html"><button>Iniciar sesión</button></a>
     </div>
 </div>
+
+    <section id="mapa-rutas" class="seccion seccion-mapa">
+      <div class="encabezado-mapa">
+        <div>
+          <p class="etiqueta-mapa">MAPA PÚBLICO</p>
+          <h2>Rutas activas de recolección</h2>
+          <p>Recorridos creados y asignados por la administración municipal. Disponibles para toda la comunidad.</p>
+        </div>
+        <span class="insignia-mapa">En tiempo real</span>
+      </div>
+      <div class="contenedor-mapa">
+        <div id="mapaRutas" aria-label="Mapa de la ruta demostrativa de recolección"></div>
+        <aside class="panel-mapa">
+          <h3>Resumen del circuito</h3>
+          <p id="resumenRutasMapa"><strong>Rutas visibles:</strong> cargando...</p>
+          <p><strong>Vista:</strong> recorridos por calles</p>
+          <h3>Rutas publicadas</h3>
+          <ol id="leyendaRutasMapa"><li>Cargando rutas...</li></ol>
+          <p class="nota-mapa">Solo se muestran rutas con camión asignado para la fecha de hoy y paradas con coordenadas.</p>
+        </aside>
+      </div>
+    </section>
     
     <section id="roles" class="seccion" >
       <h2>Roles del sistema</h2>
@@ -64,6 +88,8 @@
     </section>
   </main>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="mapa-rutas.js"></script>
   <script>
     const botones = document.querySelectorAll('[data-seccion]');
     const secciones = document.querySelectorAll('.seccion');
