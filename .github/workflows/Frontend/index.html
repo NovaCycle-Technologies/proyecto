@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NovaCycle Tech</title>
   <link rel="stylesheet" href="estilos.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 </head>
 <body class="body">
   <header class="navbar">
@@ -17,6 +18,7 @@
       <div class="menu">
         <button type="button" data-seccion="roles">Roles</button>
         <button type="button" data-seccion="funcionalidades">Funcionalidades</button>
+        <button type="button" data-seccion="mapa-rutas">Mapa de rutas</button>
         <button type="button" data-seccion="nosotros">Acerca de nosotros</button>
       </div>
     </div>
@@ -40,6 +42,33 @@
       <a href="login.html"><button>Iniciar sesión</button></a>
     </div>
 </div>
+
+    <section id="mapa-rutas" class="seccion seccion-mapa">
+      <div class="encabezado-mapa">
+        <div>
+          <p class="etiqueta-mapa">MAPA PÚBLICO</p>
+          <h2>Rutas demostrativas de recolección</h2>
+          <p>Recorridos de referencia por Parque Rodó, Cordón y Centro. Disponibles para toda la comunidad.</p>
+        </div>
+        <span class="insignia-mapa">3 circuitos</span>
+      </div>
+      <div class="contenedor-mapa">
+        <div id="mapaRutas" aria-label="Mapa de la ruta demostrativa de recolección"></div>
+        <aside class="panel-mapa">
+          <h3>Resumen del circuito</h3>
+          <p><strong>Rutas visibles:</strong> 3 circuitos</p>
+          <p><strong>Paradas:</strong> contenedores de referencia</p>
+          <p><strong>Vista:</strong> recorridos por calles</p>
+          <h3>Leyenda de circuitos</h3>
+          <ol>
+            <li><span class="punto-leyenda parque-rodo"></span> Circuito 42 · Parque Rodó</li>
+            <li><span class="punto-leyenda cordon"></span> Circuito 18 · Cordón</li>
+            <li><span class="punto-leyenda centro"></span> Circuito 07 · Centro</li>
+          </ol>
+          <p class="nota-mapa">Las ubicaciones son una simulación visual para la demostración del sistema.</p>
+        </aside>
+      </div>
+    </section>
     
     <section id="roles" class="seccion" >
       <h2>Roles del sistema</h2>
@@ -64,6 +93,8 @@
     </section>
   </main>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="mapa-rutas.js"></script>
   <script>
     const botones = document.querySelectorAll('[data-seccion]');
     const secciones = document.querySelectorAll('.seccion');
