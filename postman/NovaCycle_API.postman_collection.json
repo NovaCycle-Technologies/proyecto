@@ -1,0 +1,46 @@
+{
+  "info": {
+    "name": "NovaCycle Tech API",
+    "description": "Pruebas de la segunda entrega. Configura baseUrl como http://localhost/Proyecto/proyecto/.github/workflows.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost/Proyecto/proyecto/.github/workflows" },
+    { "key": "email", "value": "" },
+    { "key": "password", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Autenticación",
+      "item": [
+        {
+          "name": "Iniciar sesión",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}" },
+            "url": "{{baseUrl}}/Api_Usuarios/vista.php?accion=iniciar_sesion"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Operaciones",
+      "item": [
+        { "name": "Mapa público", "request": { "method": "GET", "url": "{{baseUrl}}/Api_Operaciones/vista.php?accion=mapa_publico" } },
+        { "name": "Mi ruta (Peón o Conductor)", "request": { "method": "GET", "url": "{{baseUrl}}/Api_Operaciones/vista.php?accion=mi_ruta" } },
+        { "name": "Resumen (Operario)", "request": { "method": "GET", "url": "{{baseUrl}}/Api_Operaciones/vista.php?accion=resumen" } },
+        { "name": "Reporte (Administrador)", "request": { "method": "GET", "url": "{{baseUrl}}/Api_Operaciones/vista.php?accion=reporte_admin" } },
+        {
+          "name": "Registrar incidencia (Peón o Conductor)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"ubicacion\": \"Ejido y Colonia\",\n  \"tipo\": \"Desborde\",\n  \"detalle\": \"Prueba desde Postman\"\n}" },
+            "url": "{{baseUrl}}/Api_Operaciones/vista.php?accion=incidencia"
+          }
+        }
+      ]
+    }
+  ]
+}
