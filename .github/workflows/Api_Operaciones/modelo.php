@@ -71,7 +71,7 @@ class ModeloOperaciones
         return $consulta->fetchAll(PDO::FETCH_ASSOC);
     }
     public function crearRuta(string $nombre, string $zona): int { $consulta = $this->conexion->prepare('INSERT INTO rutas (nombre, zona) VALUES (?, ?)'); $consulta->execute([$nombre, $zona]); return (int)$this->conexion->lastInsertId(); }
-    public function crearParada(int $ruta, string $ubicacion, string $descripcion, int $orden): void { $consulta = $this->conexion->prepare('INSERT INTO paradas_ruta (id_ruta, ubicacion, descripcion, orden) VALUES (?, ?, ?, ?)'); $consulta->execute([$ruta, $ubicacion, $descripcion, $orden]); }
+    public function crearParada(int $ruta, string $ubicacion, string $descripcion, int $orden, float $latitud, float $longitud): void { $consulta = $this->conexion->prepare('INSERT INTO paradas_ruta (id_ruta, ubicacion, descripcion, orden, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?)'); $consulta->execute([$ruta, $ubicacion, $descripcion, $orden, $latitud, $longitud]); }
     public function asignarRuta(array $datos): void { $consulta = $this->conexion->prepare('INSERT INTO asignaciones_ruta (id_ruta, id_camion, ci_conductor, ci_peon, fecha) VALUES (?, ?, ?, ?, ?)'); $consulta->execute([$datos['id_ruta'], $datos['id_camion'], $datos['ci_conductor'], $datos['ci_peon'], $datos['fecha']]); }
     public function miRuta(string $ci): ?array {
         $consulta = $this->conexion->prepare("SELECT a.id_asignacion, a.id_camion, r.nombre, r.zona, c.matricula, c.modelo, c.estado FROM asignaciones_ruta a INNER JOIN rutas r ON r.id_ruta=a.id_ruta INNER JOIN camiones c ON c.id_camion=a.id_camion WHERE a.fecha=CURDATE() AND (a.ci_conductor=? OR a.ci_peon=?) ORDER BY a.id_asignacion DESC LIMIT 1");
@@ -81,4 +81,10 @@ class ModeloOperaciones
     }
     public function completarParada(int $asignacion, int $parada, string $ci): bool { $consulta = $this->conexion->prepare('INSERT IGNORE INTO recolecciones (id_asignacion, id_parada, ci_trabajador) VALUES (?, ?, ?)'); $consulta->execute([$asignacion, $parada, $ci]); return $consulta->rowCount() === 1; }
     public function reporteAdmin(): array { return ['rutas_hoy' => (int)$this->conexion->query('SELECT COUNT(*) FROM asignaciones_ruta WHERE fecha=CURDATE()')->fetchColumn(), 'recolecciones_hoy' => (int)$this->conexion->query('SELECT COUNT(*) FROM recolecciones WHERE DATE(fecha_recoleccion)=CURDATE()')->fetchColumn(), 'incidencias_pendientes' => (int)$this->conexion->query("SELECT COUNT(*) FROM incidencias WHERE estado='pendiente'")->fetchColumn(), 'ingresos_hoy' => (int)$this->conexion->query('SELECT COALESCE(SUM(peso_kg),0) FROM ingresos_residuos WHERE DATE(fecha_ingreso)=CURDATE()')->fetchColumn()]; }
+    public function rutasPublicas(): array {
+        $rutas = $this->conexion->query("SELECT DISTINCT r.id_ruta, r.nombre, r.zona, c.matricula FROM rutas r INNER JOIN asignaciones_ruta a ON a.id_ruta = r.id_ruta AND a.fecha = CURDATE() INNER JOIN camiones c ON c.id_camion = a.id_camion WHERE r.activa = 1 ORDER BY r.nombre")->fetchAll(PDO::FETCH_ASSOC);
+        $consulta = $this->conexion->prepare('SELECT id_parada, ubicacion, descripcion, orden, latitud, longitud FROM paradas_ruta WHERE id_ruta = ? AND latitud IS NOT NULL AND longitud IS NOT NULL ORDER BY orden');
+        foreach ($rutas as &$ruta) { $consulta->execute([$ruta['id_ruta']]); $ruta['paradas'] = $consulta->fetchAll(PDO::FETCH_ASSOC); }
+        return $rutas;
+    }
 }

@@ -47,25 +47,20 @@
       <div class="encabezado-mapa">
         <div>
           <p class="etiqueta-mapa">MAPA PÚBLICO</p>
-          <h2>Rutas demostrativas de recolección</h2>
-          <p>Recorridos de referencia por Parque Rodó, Cordón y Centro. Disponibles para toda la comunidad.</p>
+          <h2>Rutas activas de recolección</h2>
+          <p>Recorridos creados y asignados por la administración municipal. Disponibles para toda la comunidad.</p>
         </div>
-        <span class="insignia-mapa">3 circuitos</span>
+        <span class="insignia-mapa">En tiempo real</span>
       </div>
       <div class="contenedor-mapa">
         <div id="mapaRutas" aria-label="Mapa de la ruta demostrativa de recolección"></div>
         <aside class="panel-mapa">
           <h3>Resumen del circuito</h3>
-          <p><strong>Rutas visibles:</strong> 3 circuitos</p>
-          <p><strong>Paradas:</strong> contenedores de referencia</p>
+          <p id="resumenRutasMapa"><strong>Rutas visibles:</strong> cargando...</p>
           <p><strong>Vista:</strong> recorridos por calles</p>
-          <h3>Leyenda de circuitos</h3>
-          <ol>
-            <li><span class="punto-leyenda parque-rodo"></span> Circuito 42 · Parque Rodó</li>
-            <li><span class="punto-leyenda cordon"></span> Circuito 18 · Cordón</li>
-            <li><span class="punto-leyenda centro"></span> Circuito 07 · Centro</li>
-          </ol>
-          <p class="nota-mapa">Las ubicaciones son una simulación visual para la demostración del sistema.</p>
+          <h3>Rutas publicadas</h3>
+          <ol id="leyendaRutasMapa"><li>Cargando rutas...</li></ol>
+          <p class="nota-mapa">Solo se muestran rutas con camión asignado para la fecha de hoy y paradas con coordenadas.</p>
         </aside>
       </div>
     </section>

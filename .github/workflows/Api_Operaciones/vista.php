@@ -7,6 +7,7 @@ function responder(array $resultado, int $codigo = 200): never { http_response_c
 function permitir(array $roles): void { if (!in_array($_SESSION['usuario']['rol'] ?? '', $roles, true)) responder(['ok' => false, 'mensaje' => 'No tenés permisos para esta acción.'], 403); }
 $metodo = $_SERVER['REQUEST_METHOD']; $accion = $_GET['accion'] ?? ''; $datos = json_decode(file_get_contents('php://input'), true); $datos = is_array($datos) ? $datos : $_POST; $controlador = new ControladorOperaciones(); $rol = $_SESSION['usuario']['rol'] ?? ''; $ci = (string)($_SESSION['usuario']['ci'] ?? '');
 try {
+  if ($metodo === 'GET' && $accion === 'mapa_publico') { responder($controlador->rutasPublicas()); }
   if ($metodo === 'GET' && $accion === 'rutas') { permitir(['admin_municipal']); responder($controlador->rutas()); }
   if ($metodo === 'GET' && $accion === 'trabajadores') { permitir(['admin_municipal']); responder($controlador->trabajadores($_GET['rol'] ?? '')); }
   if ($metodo === 'GET' && $accion === 'mi_ruta') { permitir(['peon', 'conductor']); responder($controlador->miRuta($ci)); }

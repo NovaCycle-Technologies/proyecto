@@ -44,6 +44,8 @@ CREATE TABLE IF NOT EXISTS paradas_ruta (
   ubicacion VARCHAR(150) NOT NULL,
   descripcion VARCHAR(150) NOT NULL,
   orden INT NOT NULL,
+  latitud DECIMAL(10, 7) NULL,
+  longitud DECIMAL(10, 7) NULL,
   CONSTRAINT fk_parada_ruta FOREIGN KEY (id_ruta) REFERENCES rutas(id_ruta) ON DELETE CASCADE
 );
 
