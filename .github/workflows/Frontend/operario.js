@@ -1,4 +1,4 @@
-const API_OPERACIONES = '../Api_Operaciones/api.php';
+const API_OPERACIONES = '../Api_Operaciones/api_operaciones.php';
 
 const usuarioOperario = JSON.parse(sessionStorage.getItem('usuarioNovaCycle') || 'null');
 

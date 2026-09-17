@@ -19,7 +19,7 @@
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}" },
-            "url": "{{baseUrl}}/Api_Usuarios/api.php?accion=iniciar_sesion"
+            "url": "{{baseUrl}}/Api_Usuarios/api_usuarios.php?accion=iniciar_sesion"
           }
         }
       ]
@@ -27,17 +27,17 @@
     {
       "name": "Operaciones",
       "item": [
-        { "name": "Mapa público", "request": { "method": "GET", "url": "{{baseUrl}}/Api_Operaciones/api.php?accion=mapa_publico" } },
-        { "name": "Mi ruta (Peón o Conductor)", "request": { "method": "GET", "url": "{{baseUrl}}/Api_Operaciones/api.php?accion=mi_ruta" } },
-        { "name": "Resumen (Operario)", "request": { "method": "GET", "url": "{{baseUrl}}/Api_Operaciones/api.php?accion=resumen" } },
-        { "name": "Reporte (Administrador)", "request": { "method": "GET", "url": "{{baseUrl}}/Api_Operaciones/api.php?accion=reporte_admin" } },
+        { "name": "Mapa público", "request": { "method": "GET", "url": "{{baseUrl}}/Api_Operaciones/api_operaciones.php?accion=mapa_publico" } },
+        { "name": "Mi ruta (Peón o Conductor)", "request": { "method": "GET", "url": "{{baseUrl}}/Api_Operaciones/api_operaciones.php?accion=mi_ruta" } },
+        { "name": "Resumen (Operario)", "request": { "method": "GET", "url": "{{baseUrl}}/Api_Operaciones/api_operaciones.php?accion=resumen" } },
+        { "name": "Reporte (Administrador)", "request": { "method": "GET", "url": "{{baseUrl}}/Api_Operaciones/api_operaciones.php?accion=reporte_admin" } },
         {
           "name": "Registrar incidencia (Peón o Conductor)",
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": { "mode": "raw", "raw": "{\n  \"ubicacion\": \"Ejido y Colonia\",\n  \"tipo\": \"Desborde\",\n  \"detalle\": \"Prueba desde Postman\"\n}" },
-            "url": "{{baseUrl}}/Api_Operaciones/api.php?accion=incidencia"
+            "url": "{{baseUrl}}/Api_Operaciones/api_operaciones.php?accion=incidencia"
           }
         }
       ]

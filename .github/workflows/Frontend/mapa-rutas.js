@@ -5,7 +5,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(mapaRutas);
 
 const coloresRuta = ['#157347', '#1769aa', '#a15c00', '#7d3c98', '#b03a2e'];
-const apiMapa = '../Api_Operaciones/api.php?accion=mapa_publico';
+const apiMapa = '../Api_Operaciones/api_operaciones.php?accion=mapa_publico';
 
 function textoSeguro(valor) {
   const elemento = document.createElement('span');
