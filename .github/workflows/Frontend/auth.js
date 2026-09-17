@@ -1,4 +1,4 @@
-const API_USUARIOS = '../Api_Usuarios/vista.php';
+const API_USUARIOS = '../Api_Usuarios/api.php';
 
 async function llamarApiUsuarios(accion, datos) {
   const respuesta = await fetch(`${API_USUARIOS}?accion=${accion}`, {
