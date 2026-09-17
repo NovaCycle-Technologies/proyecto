@@ -1,4 +1,4 @@
-const API_USUARIOS = '../Api_Usuarios/vista.php';
+const API_USUARIOS = '../Api_Usuarios/api_usuarios.php';
 
 async function llamarApiUsuarios(accion, datos) {
   const respuesta = await fetch(`${API_USUARIOS}?accion=${accion}`, {
@@ -6,7 +6,12 @@ async function llamarApiUsuarios(accion, datos) {
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     body: JSON.stringify(datos)
   });
-  const resultado = await respuesta.json();
+  let resultado;
+  try {
+    resultado = await respuesta.json();
+  } catch {
+    throw new Error('La API no respondió correctamente. Recargá la página e intentá de nuevo.');
+  }
   if (!respuesta.ok) throw new Error(resultado.mensaje || 'No fue posible completar la operación.');
   return resultado;
 }
