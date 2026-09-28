@@ -73,6 +73,12 @@
         <label for="capacidad">Capacidad en litros</label>
         <input type="number" id="capacidad" min="1" required>
 
+        <label for="latitudContenedor">Latitud</label>
+        <input type="number" id="latitudContenedor" step="any" min="-35.15" max="-34.65" required placeholder="Ej.: -34.9050">
+
+        <label for="longitudContenedor">Longitud</label>
+        <input type="number" id="longitudContenedor" step="any" min="-56.45" max="-55.85" required placeholder="Ej.: -56.1850">
+
         <button type="submit" id="btnGuardar">Crear contenedor</button>
         <button type="button" id="btnCancelar" hidden>Cancelar edición</button>
       </form>
@@ -140,28 +146,38 @@
 
     <section id="rutas">
       <h2>Rutas y cuadrillas</h2>
-      <p>Creá una ruta, agregá sus paradas y asigná el camión y trabajadores para la jornada.</p>
-      <form id="formRuta"><label for="nombreRutaAdmin">Nombre de ruta</label><input id="nombreRutaAdmin" required placeholder="Ej.: Ruta Centro 04"><label for="zonaRutaAdmin">Zona</label><input id="zonaRutaAdmin" required placeholder="Ej.: Centro"><button type="submit">Crear ruta</button></form>
-      <form id="formParada"><label for="rutaParada">Ruta</label><select id="rutaParada" required></select><label for="ubicacionParada">Ubicación</label><input id="ubicacionParada" required placeholder="Ej.: Ejido y Colonia"><label for="descripcionParada">Descripción</label><input id="descripcionParada" value="Contenedores"><label for="ordenParada">Orden</label><input id="ordenParada" type="number" min="1" value="1"><label for="latitudParada">Latitud</label><input id="latitudParada" type="number" step="any" required placeholder="Ej.: -34.9050"><label for="longitudParada">Longitud</label><input id="longitudParada" type="number" step="any" required placeholder="Ej.: -56.1850"><button type="submit">Agregar parada</button></form>
+      <p>Creá una ruta, agregá los contenedores que debe recorrer y asigná el camión y trabajadores para la jornada.</p>
+      <form id="formRuta"><input type="hidden" id="idRutaAdmin"><label for="nombreRutaAdmin">Nombre de ruta</label><input id="nombreRutaAdmin" required placeholder="Ej.: Ruta Centro 04"><label for="zonaRutaAdmin">Zona</label><input id="zonaRutaAdmin" required placeholder="Ej.: Centro"><button type="submit" id="btnGuardarRuta">Crear ruta</button><button type="button" id="btnCancelarRuta" hidden>Cancelar edición</button></form>
+      <div><label for="rutaGestion">Ruta creada</label><select id="rutaGestion"></select><button type="button" id="btnEditarRuta">Modificar ruta</button><button type="button" id="btnEliminarRuta">Eliminar ruta</button></div>
+      <form id="formParada"><label for="rutaParada">Ruta</label><select id="rutaParada" required></select><label for="contenedorParada">Contenedor</label><select id="contenedorParada" required></select><label for="ordenParada">Orden de recorrido</label><input id="ordenParada" type="number" min="1" value="1"><button type="submit">Agregar contenedor a la ruta</button></form>
       <form id="formAsignacion"><label for="rutaAsignacion">Ruta</label><select id="rutaAsignacion" required></select><label for="camionAsignacion">Camión</label><select id="camionAsignacion" required></select><label for="conductorAsignacion">Conductor</label><select id="conductorAsignacion" required></select><label for="peonAsignacion">Peón</label><select id="peonAsignacion" required></select><label for="fechaAsignacion">Fecha</label><input id="fechaAsignacion" type="date" required><button type="submit">Asignar cuadrilla</button></form>
       <p id="mensajeRutas" class="mensaje"></p>
     </section>
 
     <section id="reportes">
-      <h2>Reporte de hoy</h2>
+      <h2>Dashboard operativo</h2>
+      <p>Resumen de la jornada, la flota y el estado de los contenedores.</p>
+      <button type="button" id="btnActualizarDashboard">Actualizar datos</button>
+      <div id="dashboardMetricas" class="dashboard-metricas" aria-live="polite"></div>
+      <div class="dashboard-graficos">
+        <article><h3>Estado de contenedores</h3><div id="graficoContenedores" class="grafico-barras"></div></article>
+        <article><h3>Estado de camiones</h3><div id="graficoCamiones" class="grafico-barras"></div></article>
+      </div>
+      <p id="mensajeDashboard" class="mensaje">Cargando dashboard...</p>
+      <h3>Detalle de la jornada</h3>
       <p id="reporteAdmin" class="mensaje">Cargando reporte...</p>
     </section>
   </main>
 
   <script>
     const apiUsuarios =
-      "/Proyecto/proyecto/.github/workflows/Api_Usuarios/vista.php";
+      "/Proyecto/proyecto/.github/workflows/Api_Usuarios/api_usuarios.php";
 
     const apiGestion =
-      "/Proyecto/proyecto/.github/workflows/Api_Gestion/vista.php";
+      "/Proyecto/proyecto/.github/workflows/Api_Gestion/api_gestion.php";
 
     const apiCamiones =
-      "/Proyecto/proyecto/.github/workflows/Api_Camiones/vista.php";
+      "/Proyecto/proyecto/.github/workflows/Api_Camiones/api_camiones.php";
 
     const tablaUsuarios = document.getElementById("tablaUsuarios");
     const cuerpoUsuarios = tablaUsuarios.querySelector("tbody");
@@ -342,7 +358,9 @@
         numero: document.getElementById("numero").value,
         estado: document.getElementById("estado").value,
         tipo_residuo: document.getElementById("tipoResiduo").value,
-        capacidad_litros: document.getElementById("capacidad").value
+        capacidad_litros: document.getElementById("capacidad").value,
+        latitud: document.getElementById("latitudContenedor").value,
+        longitud: document.getElementById("longitudContenedor").value
       };
 
       const editando = idContenedor.value !== "";
@@ -380,6 +398,8 @@
       document.getElementById("estado").value = contenedor.estado;
       document.getElementById("tipoResiduo").value = contenedor.tipo_residuo;
       document.getElementById("capacidad").value = contenedor.capacidad_litros;
+      document.getElementById("latitudContenedor").value = contenedor.latitud || "";
+      document.getElementById("longitudContenedor").value = contenedor.longitud || "";
 
       btnGuardar.textContent = "Guardar cambios";
       btnCancelar.hidden = false;
@@ -563,5 +583,6 @@
     cargarCamiones();
   </script>
   <script src="admin-operaciones.js"></script>
+  <script src="admin-dashboard.js"></script>
 </body>
 </html>

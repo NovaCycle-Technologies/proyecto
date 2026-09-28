@@ -41,12 +41,15 @@ CREATE TABLE IF NOT EXISTS rutas (
 CREATE TABLE IF NOT EXISTS paradas_ruta (
   id_parada INT AUTO_INCREMENT PRIMARY KEY,
   id_ruta INT NOT NULL,
+  id_contenedor INT NULL,
   ubicacion VARCHAR(150) NOT NULL,
   descripcion VARCHAR(150) NOT NULL,
   orden INT NOT NULL,
   latitud DECIMAL(10, 7) NULL,
   longitud DECIMAL(10, 7) NULL,
-  CONSTRAINT fk_parada_ruta FOREIGN KEY (id_ruta) REFERENCES rutas(id_ruta) ON DELETE CASCADE
+  UNIQUE KEY unica_parada_contenedor (id_ruta, id_contenedor),
+  CONSTRAINT fk_parada_ruta FOREIGN KEY (id_ruta) REFERENCES rutas(id_ruta) ON DELETE CASCADE,
+  CONSTRAINT fk_parada_contenedor FOREIGN KEY (id_contenedor) REFERENCES contenedores(id_contenedor)
 );
 
 CREATE TABLE IF NOT EXISTS asignaciones_ruta (

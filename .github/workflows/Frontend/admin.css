@@ -95,6 +95,60 @@ table {
   background-color: white;
 }
 
+.dashboard-metricas,
+.dashboard-graficos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+  max-width: 900px;
+}
+
+.dashboard-metricas article,
+.dashboard-graficos article {
+  padding: 18px;
+  border: 1px solid #c8d4c4;
+  background-color: white;
+}
+
+.dashboard-metricas span,
+.dashboard-graficos h3 {
+  color: #617c63;
+  font-size: 14px;
+}
+
+.dashboard-metricas strong {
+  display: block;
+  margin-top: 8px;
+  color: green;
+  font-size: 28px;
+}
+
+.grafico-barras {
+  display: grid;
+  gap: 12px;
+}
+
+.fila-barra {
+  display: grid;
+  grid-template-columns: 125px 1fr 30px;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.pista-barra {
+  height: 12px;
+  overflow: hidden;
+  background-color: #e5eee1;
+  border-radius: 8px;
+}
+
+.valor-barra {
+  height: 100%;
+  background-color: green;
+}
+
 th,
 td {
   padding: 13px;
