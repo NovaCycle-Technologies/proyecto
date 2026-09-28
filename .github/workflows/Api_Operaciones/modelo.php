@@ -72,6 +72,8 @@ class ModeloOperaciones
         return $consulta->fetchAll(PDO::FETCH_ASSOC);
     }
     public function crearRuta(string $nombre, string $zona): int { $consulta = $this->conexion->prepare('INSERT INTO rutas (nombre, zona) VALUES (?, ?)'); $consulta->execute([$nombre, $zona]); return (int)$this->conexion->lastInsertId(); }
+    public function actualizarRuta(int $ruta, string $nombre, string $zona): bool { $consulta = $this->conexion->prepare('UPDATE rutas SET nombre = ?, zona = ? WHERE id_ruta = ? AND activa = 1'); $consulta->execute([$nombre, $zona, $ruta]); return $consulta->rowCount() === 1; }
+    public function eliminarRuta(int $ruta): bool { $consulta = $this->conexion->prepare('UPDATE rutas SET activa = 0 WHERE id_ruta = ? AND activa = 1'); $consulta->execute([$ruta]); return $consulta->rowCount() === 1; }
     public function crearParada(int $ruta, int $contenedor, int $orden): bool {
         $consulta = $this->conexion->prepare("INSERT INTO paradas_ruta (id_ruta, id_contenedor, ubicacion, descripcion, orden, latitud, longitud) SELECT ?, id_contenedor, CONCAT(calle, ' ', numero), CONCAT(tipo_residuo, ' · ', capacidad_litros, ' L'), ?, latitud, longitud FROM contenedores WHERE id_contenedor = ? AND activo = 1 AND latitud IS NOT NULL AND longitud IS NOT NULL");
         $consulta->execute([$ruta, $orden, $contenedor]);

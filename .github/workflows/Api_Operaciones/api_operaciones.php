@@ -22,6 +22,8 @@ try {
   if ($metodo === 'POST' && $accion === 'ingreso') { permitir(['operario']); responder($controlador->ingreso($datos, $ci), 201); }
   if ($metodo === 'POST' && $accion === 'maquinaria') { permitir(['operario']); responder($controlador->maquinaria($datos, $ci)); }
   if ($metodo === 'POST' && $accion === 'crear_ruta') { permitir(['admin_municipal']); responder($controlador->crearRuta($datos), 201); }
+  if ($metodo === 'POST' && $accion === 'actualizar_ruta') { permitir(['admin_municipal']); responder($controlador->actualizarRuta($datos)); }
+  if ($metodo === 'POST' && $accion === 'eliminar_ruta') { permitir(['admin_municipal']); responder($controlador->eliminarRuta($datos)); }
   if ($metodo === 'POST' && $accion === 'crear_parada') { permitir(['admin_municipal']); responder($controlador->crearParada($datos), 201); }
   if ($metodo === 'POST' && $accion === 'asignar_ruta') { permitir(['admin_municipal']); responder($controlador->asignarRuta($datos), 201); }
   if ($metodo === 'POST' && $accion === 'completar_parada') { permitir(['peon', 'conductor']); responder($controlador->completarParada($datos, $ci)); }

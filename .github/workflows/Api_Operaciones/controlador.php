@@ -36,6 +36,8 @@ class ControladorOperaciones
     public function contenedores(): array { return ['ok' => true, 'contenedores' => $this->modelo->contenedores()]; }
     public function trabajadores(string $rol): array { return ['ok' => true, 'trabajadores' => $this->modelo->trabajadores($rol)]; }
     public function crearRuta(array $datos): array { if (trim((string)($datos['nombre'] ?? '')) === '' || trim((string)($datos['zona'] ?? '')) === '') return ['ok' => false, 'mensaje' => 'Completá nombre y zona.']; return ['ok' => true, 'id_ruta' => $this->modelo->crearRuta(trim($datos['nombre']), trim($datos['zona'])), 'mensaje' => 'Ruta creada correctamente.']; }
+    public function actualizarRuta(array $datos): array { $ruta = (int)($datos['id_ruta'] ?? 0); $nombre = trim((string)($datos['nombre'] ?? '')); $zona = trim((string)($datos['zona'] ?? '')); if ($ruta <= 0 || $nombre === '' || $zona === '') return ['ok' => false, 'mensaje' => 'Completá ruta, nombre y zona.']; return $this->modelo->actualizarRuta($ruta, $nombre, $zona) ? ['ok' => true, 'mensaje' => 'Ruta actualizada correctamente.'] : ['ok' => false, 'mensaje' => 'No se pudo actualizar la ruta.']; }
+    public function eliminarRuta(array $datos): array { return $this->modelo->eliminarRuta((int)($datos['id_ruta'] ?? 0)) ? ['ok' => true, 'mensaje' => 'Ruta eliminada correctamente.'] : ['ok' => false, 'mensaje' => 'No se pudo eliminar la ruta.']; }
     public function crearParada(array $datos): array {
         $ruta = (int)($datos['id_ruta'] ?? 0); $contenedor = (int)($datos['id_contenedor'] ?? 0);
         if ($ruta <= 0 || $contenedor <= 0) return ['ok' => false, 'mensaje' => 'Seleccioná una ruta y un contenedor.'];
