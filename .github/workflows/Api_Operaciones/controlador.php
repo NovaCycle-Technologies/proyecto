@@ -48,5 +48,6 @@ class ControladorOperaciones
     public function miRuta(string $ci): array { return ['ok' => true, 'asignacion' => $this->modelo->miRuta($ci)]; }
     public function completarParada(array $datos, string $ci): array { return $this->modelo->completarParada((int)($datos['id_asignacion'] ?? 0), (int)($datos['id_parada'] ?? 0), $ci) ? ['ok' => true, 'mensaje' => 'Parada registrada como completada.'] : ['ok' => false, 'mensaje' => 'La parada ya estaba completada.']; }
     public function reporteAdmin(): array { return ['ok' => true, 'reporte' => $this->modelo->reporteAdmin()]; }
+    public function dashboardAdmin(): array { return ['ok' => true, 'dashboard' => $this->modelo->dashboardAdmin()]; }
     public function rutasPublicas(): array { return ['ok' => true, 'rutas' => $this->modelo->rutasPublicas()]; }
 }

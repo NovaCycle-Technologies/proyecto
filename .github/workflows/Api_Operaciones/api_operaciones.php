@@ -13,6 +13,7 @@ try {
   if ($metodo === 'GET' && $accion === 'trabajadores') { permitir(['admin_municipal']); responder($controlador->trabajadores($_GET['rol'] ?? '')); }
   if ($metodo === 'GET' && $accion === 'mi_ruta') { permitir(['peon', 'conductor']); responder($controlador->miRuta($ci)); }
   if ($metodo === 'GET' && $accion === 'reporte_admin') { permitir(['admin_municipal']); responder($controlador->reporteAdmin()); }
+  if ($metodo === 'GET' && $accion === 'dashboard_admin') { permitir(['admin_municipal']); responder($controlador->dashboardAdmin()); }
   if ($metodo === 'GET' && $accion === 'camiones') { permitir(['admin_municipal', 'peon', 'conductor', 'operario']); responder($controlador->camiones()); }
   if ($metodo === 'GET' && $accion === 'incidencias') { permitir(['operario']); responder($controlador->incidencias()); }
   if ($metodo === 'GET' && $accion === 'resumen') { permitir(['operario']); responder($controlador->resumen()); }

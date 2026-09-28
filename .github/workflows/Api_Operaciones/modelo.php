@@ -88,6 +88,13 @@ class ModeloOperaciones
     }
     public function completarParada(int $asignacion, int $parada, string $ci): bool { $consulta = $this->conexion->prepare('INSERT IGNORE INTO recolecciones (id_asignacion, id_parada, ci_trabajador) VALUES (?, ?, ?)'); $consulta->execute([$asignacion, $parada, $ci]); return $consulta->rowCount() === 1; }
     public function reporteAdmin(): array { return ['rutas_hoy' => (int)$this->conexion->query('SELECT COUNT(*) FROM asignaciones_ruta WHERE fecha=CURDATE()')->fetchColumn(), 'recolecciones_hoy' => (int)$this->conexion->query('SELECT COUNT(*) FROM recolecciones WHERE DATE(fecha_recoleccion)=CURDATE()')->fetchColumn(), 'incidencias_pendientes' => (int)$this->conexion->query("SELECT COUNT(*) FROM incidencias WHERE estado='pendiente'")->fetchColumn(), 'ingresos_hoy' => (int)$this->conexion->query('SELECT COALESCE(SUM(peso_kg),0) FROM ingresos_residuos WHERE DATE(fecha_ingreso)=CURDATE()')->fetchColumn()]; }
+    public function dashboardAdmin(): array {
+        $contenedores = ['funcional' => 0, 'roto' => 0, 'desbordado' => 0];
+        foreach ($this->conexion->query('SELECT estado, COUNT(*) AS cantidad FROM contenedores WHERE activo = 1 GROUP BY estado')->fetchAll(PDO::FETCH_ASSOC) as $fila) $contenedores[$fila['estado']] = (int)$fila['cantidad'];
+        $camiones = ['disponible' => 0, 'en_mantenimiento' => 0, 'fuera_de_servicio' => 0];
+        foreach ($this->conexion->query('SELECT estado, COUNT(*) AS cantidad FROM camiones WHERE activo = 1 GROUP BY estado')->fetchAll(PDO::FETCH_ASSOC) as $fila) $camiones[$fila['estado']] = (int)$fila['cantidad'];
+        return ['jornada' => $this->reporteAdmin(), 'contenedores' => $contenedores, 'camiones' => $camiones];
+    }
     public function rutasPublicas(): array {
         $rutas = $this->conexion->query("SELECT DISTINCT r.id_ruta, r.nombre, r.zona, c.matricula FROM rutas r INNER JOIN asignaciones_ruta a ON a.id_ruta = r.id_ruta AND a.fecha = CURDATE() INNER JOIN camiones c ON c.id_camion = a.id_camion WHERE r.activa = 1 ORDER BY r.nombre")->fetchAll(PDO::FETCH_ASSOC);
         $consulta = $this->conexion->prepare('SELECT id_parada, ubicacion, descripcion, orden, latitud, longitud FROM paradas_ruta WHERE id_ruta = ? AND latitud IS NOT NULL AND longitud IS NOT NULL ORDER BY orden');

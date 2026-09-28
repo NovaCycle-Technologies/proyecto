@@ -155,7 +155,16 @@
     </section>
 
     <section id="reportes">
-      <h2>Reporte de hoy</h2>
+      <h2>Dashboard operativo</h2>
+      <p>Resumen de la jornada, la flota y el estado de los contenedores.</p>
+      <button type="button" id="btnActualizarDashboard">Actualizar datos</button>
+      <div id="dashboardMetricas" class="dashboard-metricas" aria-live="polite"></div>
+      <div class="dashboard-graficos">
+        <article><h3>Estado de contenedores</h3><div id="graficoContenedores" class="grafico-barras"></div></article>
+        <article><h3>Estado de camiones</h3><div id="graficoCamiones" class="grafico-barras"></div></article>
+      </div>
+      <p id="mensajeDashboard" class="mensaje">Cargando dashboard...</p>
+      <h3>Detalle de la jornada</h3>
       <p id="reporteAdmin" class="mensaje">Cargando reporte...</p>
     </section>
   </main>
@@ -574,5 +583,6 @@
     cargarCamiones();
   </script>
   <script src="admin-operaciones.js"></script>
+  <script src="admin-dashboard.js"></script>
 </body>
 </html>
