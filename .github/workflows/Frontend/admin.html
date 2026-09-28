@@ -73,6 +73,12 @@
         <label for="capacidad">Capacidad en litros</label>
         <input type="number" id="capacidad" min="1" required>
 
+        <label for="latitudContenedor">Latitud</label>
+        <input type="number" id="latitudContenedor" step="any" min="-35.15" max="-34.65" required placeholder="Ej.: -34.9050">
+
+        <label for="longitudContenedor">Longitud</label>
+        <input type="number" id="longitudContenedor" step="any" min="-56.45" max="-55.85" required placeholder="Ej.: -56.1850">
+
         <button type="submit" id="btnGuardar">Crear contenedor</button>
         <button type="button" id="btnCancelar" hidden>Cancelar edición</button>
       </form>
@@ -140,9 +146,9 @@
 
     <section id="rutas">
       <h2>Rutas y cuadrillas</h2>
-      <p>Creá una ruta, agregá sus paradas y asigná el camión y trabajadores para la jornada.</p>
+      <p>Creá una ruta, agregá los contenedores que debe recorrer y asigná el camión y trabajadores para la jornada.</p>
       <form id="formRuta"><label for="nombreRutaAdmin">Nombre de ruta</label><input id="nombreRutaAdmin" required placeholder="Ej.: Ruta Centro 04"><label for="zonaRutaAdmin">Zona</label><input id="zonaRutaAdmin" required placeholder="Ej.: Centro"><button type="submit">Crear ruta</button></form>
-      <form id="formParada"><label for="rutaParada">Ruta</label><select id="rutaParada" required></select><label for="ubicacionParada">Ubicación</label><input id="ubicacionParada" required placeholder="Ej.: Ejido y Colonia"><label for="descripcionParada">Descripción</label><input id="descripcionParada" value="Contenedores"><label for="ordenParada">Orden</label><input id="ordenParada" type="number" min="1" value="1"><label for="latitudParada">Latitud</label><input id="latitudParada" type="number" step="any" min="-35.15" max="-34.65" required placeholder="Ej.: -34.9050"><label for="longitudParada">Longitud</label><input id="longitudParada" type="number" step="any" min="-56.45" max="-55.85" required placeholder="Ej.: -56.1850"><button type="submit">Agregar parada</button></form>
+      <form id="formParada"><label for="rutaParada">Ruta</label><select id="rutaParada" required></select><label for="contenedorParada">Contenedor</label><select id="contenedorParada" required></select><label for="ordenParada">Orden de recorrido</label><input id="ordenParada" type="number" min="1" value="1"><button type="submit">Agregar contenedor a la ruta</button></form>
       <form id="formAsignacion"><label for="rutaAsignacion">Ruta</label><select id="rutaAsignacion" required></select><label for="camionAsignacion">Camión</label><select id="camionAsignacion" required></select><label for="conductorAsignacion">Conductor</label><select id="conductorAsignacion" required></select><label for="peonAsignacion">Peón</label><select id="peonAsignacion" required></select><label for="fechaAsignacion">Fecha</label><input id="fechaAsignacion" type="date" required><button type="submit">Asignar cuadrilla</button></form>
       <p id="mensajeRutas" class="mensaje"></p>
     </section>
@@ -342,7 +348,9 @@
         numero: document.getElementById("numero").value,
         estado: document.getElementById("estado").value,
         tipo_residuo: document.getElementById("tipoResiduo").value,
-        capacidad_litros: document.getElementById("capacidad").value
+        capacidad_litros: document.getElementById("capacidad").value,
+        latitud: document.getElementById("latitudContenedor").value,
+        longitud: document.getElementById("longitudContenedor").value
       };
 
       const editando = idContenedor.value !== "";
@@ -380,6 +388,8 @@
       document.getElementById("estado").value = contenedor.estado;
       document.getElementById("tipoResiduo").value = contenedor.tipo_residuo;
       document.getElementById("capacidad").value = contenedor.capacidad_litros;
+      document.getElementById("latitudContenedor").value = contenedor.latitud || "";
+      document.getElementById("longitudContenedor").value = contenedor.longitud || "";
 
       btnGuardar.textContent = "Guardar cambios";
       btnCancelar.hidden = false;

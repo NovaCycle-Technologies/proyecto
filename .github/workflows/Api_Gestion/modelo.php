@@ -35,15 +35,17 @@ class ModeloContenedores
     public function crear(array $contenedor): int
     {
         $consulta = $this->conexion->prepare(
-            'INSERT INTO contenedores (calle, numero, estado, tipo_residuo, capacidad_litros)
-             VALUES (?, ?, ?, ?, ?)'
+            'INSERT INTO contenedores (calle, numero, estado, tipo_residuo, capacidad_litros, latitud, longitud)
+             VALUES (?, ?, ?, ?, ?, ?, ?)'
         );
         $consulta->execute([
             $contenedor['calle'],
             $contenedor['numero'],
             $contenedor['estado'],
             $contenedor['tipo_residuo'],
-            $contenedor['capacidad_litros']
+            $contenedor['capacidad_litros'],
+            $contenedor['latitud'],
+            $contenedor['longitud']
         ]);
         return (int) $this->conexion->lastInsertId();
     }
@@ -52,7 +54,7 @@ class ModeloContenedores
     {
         $consulta = $this->conexion->prepare(
             'UPDATE contenedores
-             SET calle = ?, numero = ?, estado = ?, tipo_residuo = ?, capacidad_litros = ?
+             SET calle = ?, numero = ?, estado = ?, tipo_residuo = ?, capacidad_litros = ?, latitud = ?, longitud = ?
              WHERE id_contenedor = ? AND activo = 1'
         );
         $consulta->execute([
@@ -61,6 +63,8 @@ class ModeloContenedores
             $contenedor['estado'],
             $contenedor['tipo_residuo'],
             $contenedor['capacidad_litros'],
+            $contenedor['latitud'],
+            $contenedor['longitud'],
             $id
         ]);
         return $consulta->rowCount() === 1;

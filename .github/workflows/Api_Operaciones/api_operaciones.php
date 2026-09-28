@@ -9,6 +9,7 @@ $metodo = $_SERVER['REQUEST_METHOD']; $accion = $_GET['accion'] ?? ''; $datos = 
 try {
   if ($metodo === 'GET' && $accion === 'mapa_publico') { responder($controlador->rutasPublicas()); }
   if ($metodo === 'GET' && $accion === 'rutas') { permitir(['admin_municipal']); responder($controlador->rutas()); }
+  if ($metodo === 'GET' && $accion === 'contenedores') { permitir(['admin_municipal']); responder($controlador->contenedores()); }
   if ($metodo === 'GET' && $accion === 'trabajadores') { permitir(['admin_municipal']); responder($controlador->trabajadores($_GET['rol'] ?? '')); }
   if ($metodo === 'GET' && $accion === 'mi_ruta') { permitir(['peon', 'conductor']); responder($controlador->miRuta($ci)); }
   if ($metodo === 'GET' && $accion === 'reporte_admin') { permitir(['admin_municipal']); responder($controlador->reporteAdmin()); }

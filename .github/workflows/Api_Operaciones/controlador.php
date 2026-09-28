@@ -33,15 +33,14 @@ class ControladorOperaciones
         return ['ok' => true, 'mensaje' => 'Estado de la maquinaria actualizado correctamente.'];
     }
     public function rutas(): array { return ['ok' => true, 'rutas' => $this->modelo->rutas()]; }
+    public function contenedores(): array { return ['ok' => true, 'contenedores' => $this->modelo->contenedores()]; }
     public function trabajadores(string $rol): array { return ['ok' => true, 'trabajadores' => $this->modelo->trabajadores($rol)]; }
     public function crearRuta(array $datos): array { if (trim((string)($datos['nombre'] ?? '')) === '' || trim((string)($datos['zona'] ?? '')) === '') return ['ok' => false, 'mensaje' => 'Completá nombre y zona.']; return ['ok' => true, 'id_ruta' => $this->modelo->crearRuta(trim($datos['nombre']), trim($datos['zona'])), 'mensaje' => 'Ruta creada correctamente.']; }
     public function crearParada(array $datos): array {
-        $latitud = filter_var($datos['latitud'] ?? null, FILTER_VALIDATE_FLOAT);
-        $longitud = filter_var($datos['longitud'] ?? null, FILTER_VALIDATE_FLOAT);
-        if ((int)($datos['id_ruta'] ?? 0) <= 0 || trim((string)($datos['ubicacion'] ?? '')) === '' || $latitud === false || $longitud === false) return ['ok' => false, 'mensaje' => 'Completá ruta, ubicación, latitud y longitud.'];
-        if ($latitud < -35.15 || $latitud > -34.65 || $longitud < -56.45 || $longitud > -55.85) return ['ok' => false, 'mensaje' => 'Las coordenadas deben corresponder a una ubicación de Montevideo.'];
-        $this->modelo->crearParada((int)$datos['id_ruta'], trim($datos['ubicacion']), trim((string)($datos['descripcion'] ?? 'Contenedores')), max(1, (int)($datos['orden'] ?? 1)), (float)$latitud, (float)$longitud);
-        return ['ok' => true, 'mensaje' => 'Parada agregada al mapa.'];
+        $ruta = (int)($datos['id_ruta'] ?? 0); $contenedor = (int)($datos['id_contenedor'] ?? 0);
+        if ($ruta <= 0 || $contenedor <= 0) return ['ok' => false, 'mensaje' => 'Seleccioná una ruta y un contenedor.'];
+        if (!$this->modelo->crearParada($ruta, $contenedor, max(1, (int)($datos['orden'] ?? 1)))) return ['ok' => false, 'mensaje' => 'El contenedor ya está en esta ruta o no tiene coordenadas válidas.'];
+        return ['ok' => true, 'mensaje' => 'Contenedor agregado a la ruta correctamente.'];
     }
     public function asignarRuta(array $datos): array { foreach (['id_ruta','id_camion','ci_conductor','ci_peon','fecha'] as $campo) if (trim((string)($datos[$campo] ?? '')) === '') return ['ok' => false, 'mensaje' => 'Completá todos los datos de asignación.']; $this->modelo->asignarRuta($datos); return ['ok' => true, 'mensaje' => 'Ruta asignada correctamente.']; }
     public function miRuta(string $ci): array { return ['ok' => true, 'asignacion' => $this->modelo->miRuta($ci)]; }
