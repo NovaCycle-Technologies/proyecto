@@ -4,37 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NovaCycle Tech | Registro</title>
+    <link rel="stylesheet" href="auth.css?v=1">
 </head>
-<body>
-    <div class="formulario">
-        <h1>Registro de usuario</h1>
-        <p>Por favor, complete el siguiente formulario para registrarse.</p>
-        <form id="formRegistro">
-            <label for="nombre">Nombre:</label>
-            <input type="text" id="nombre" name="nombre" required><br><br>
+<body class="auth-page">
+    <header class="auth-header">
+        <a class="auth-brand" href="index.html" aria-label="NovaCycle Tech, ir al inicio">
+            <span class="brand-icon" aria-hidden="true">♻</span>
+            <span><strong>NovaCycle Tech</strong><small>Gestión de residuos urbanos</small></span>
+        </a>
+        <a class="header-link" href="index.html">← Volver al inicio</a>
+    </header>
 
-            <label for="apellido">Apellido:</label>
-            <input type="text" id="apellido" name="apellido" required><br><br>
+    <main class="auth-shell">
+        <aside class="auth-intro">
+            <span class="eyebrow">SUMATE A NOVACYCLE</span>
+            <h1>Formá parte del cambio.</h1>
+            <p>Solicitá tu cuenta para trabajar con las rutas, la recolección y el seguimiento de incidencias.</p>
+            <div class="intro-note"><span aria-hidden="true">✓</span> Un administrador revisará tu solicitud antes de habilitar el acceso.</div>
+        </aside>
 
-            <label for="CI">Cédula de identidad:</label>
-            <input type="text" id="CI" name="CI" required><br><br>
+        <section class="auth-card" aria-labelledby="titulo-registro">
+            <span class="form-kicker">CREAR CUENTA</span>
+            <h2 id="titulo-registro">Registro de usuario</h2>
+            <p class="form-description">Completá tus datos y elegí el puesto que vas a desempeñar.</p>
 
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required><br><br>
-
-            <label for="password">Contraseña:</label>
-            <input type="password" id="password" name="password" minlength="8" required><br><br>
-
-            <label for="rol_solicitado">Puesto solicitado:</label>
-            <select id="rol_solicitado" name="rol_solicitado" required>
-                <option value="peon">Peón de recolección</option>
-                <option value="conductor">Conductor</option>
-                <option value="operario">Operario</option>
-            </select><br><br>
-            <input type="submit" value="Enviar solicitud">
-        </form>
-        <p id="mensajeRegistro" role="alert" hidden></p>
-    </div>
+            <form id="formRegistro" class="auth-form registration-form">
+                <div class="field">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" autocomplete="given-name" required>
+                </div>
+                <div class="field">
+                    <label for="apellido">Apellido</label>
+                    <input type="text" id="apellido" name="apellido" placeholder="Tu apellido" autocomplete="family-name" required>
+                </div>
+                <div class="field">
+                    <label for="CI">Cédula de identidad</label>
+                    <input type="text" id="CI" name="CI" placeholder="Sin puntos ni guiones" inputmode="numeric" required>
+                </div>
+                <div class="field">
+                    <label for="email">Correo electrónico</label>
+                    <input type="email" id="email" name="email" placeholder="nombre@ejemplo.com" autocomplete="email" required>
+                </div>
+                <div class="field">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" name="password" placeholder="Mínimo 8 caracteres" autocomplete="new-password" minlength="8" required>
+                </div>
+                <div class="field">
+                    <label for="rol_solicitado">Puesto solicitado</label>
+                    <select id="rol_solicitado" name="rol_solicitado" required>
+                        <option value="" disabled selected>Elegí un puesto</option>
+                        <option value="peon">Peón de recolección</option>
+                        <option value="conductor">Conductor</option>
+                        <option value="operario">Operario</option>
+                    </select>
+                </div>
+                <button class="submit-button full-width" type="submit">Enviar solicitud <span aria-hidden="true">→</span></button>
+            </form>
+            <p id="mensajeRegistro" class="form-message" role="alert" hidden></p>
+            <p class="auth-switch">¿Ya tenés una cuenta aprobada? <a href="login.html">Iniciá sesión</a></p>
+        </section>
+    </main>
     <script src="auth.js?v=3"></script>
 </body>
 </html>
