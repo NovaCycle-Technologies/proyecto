@@ -36,7 +36,9 @@
         <h2>Registrar incidencia</h2>
         <p>Informá una rotura, desborde o problema durante el recorrido.</p>
         <form id="formIncidencia">
-          <label for="ubicacion">Ubicación</label>
+          <label for="contenedorIncidencia">Lugar del problema</label>
+          <select id="contenedorIncidencia"><option value="">Otro lugar</option></select>
+          <label for="ubicacion" id="etiquetaUbicacion">Ubicación (otro lugar)</label>
           <input id="ubicacion" required placeholder="Ej.: Yaguarón y Uruguay">
           <label for="tipoIncidencia">Tipo de incidencia</label>
           <select id="tipoIncidencia" required><option value="Desborde">Desborde</option><option value="Contenedor roto">Contenedor roto</option><option value="No se pudo recolectar">No se pudo recolectar</option></select>
@@ -58,7 +60,11 @@
         </form>
       </section>
     </div>
+    <section class="panel">
+      <h2>Mis incidencias</h2>
+      <ul id="listaMisIncidencias" class="paradas"><li>Cargando reportes...</li></ul>
+    </section>
   </main>
-  <script src="cuadrilla.js"></script>
+  <script src="cuadrilla.js?v=4"></script>
 </body>
 </html>

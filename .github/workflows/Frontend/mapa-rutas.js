@@ -42,21 +42,40 @@ async function dibujarRuta(ruta, color) {
 async function cargarRutasPublicas() {
   const respuesta = await fetch(apiMapa);
   const datos = await respuesta.json();
-  if (!respuesta.ok || !datos.ok) throw new Error(datos.mensaje || 'No fue posible cargar las rutas.');
+  if (!respuesta.ok || !datos.ok) throw new Error(datos.mensaje || 'No fue posible cargar el mapa.');
+
+  const puntos = [];
+  const contenedores = datos.contenedores || [];
+  const incidencias = datos.incidencias || [];
+  contenedores.forEach((contenedor) => {
+    const punto = [Number(contenedor.latitud), Number(contenedor.longitud)];
+    L.circleMarker(punto, { radius: 6, color: '#1769aa', fillColor: '#1769aa', fillOpacity: 0.9 })
+      .bindPopup(`<strong>Contenedor #${contenedor.id_contenedor}</strong><br>${textoSeguro(contenedor.ubicacion)}<br>${textoSeguro(contenedor.tipo_residuo)} · ${textoSeguro(contenedor.estado)}`)
+      .addTo(mapaRutas);
+    puntos.push(punto);
+  });
+  incidencias.forEach((incidencia) => {
+    const punto = [Number(incidencia.latitud), Number(incidencia.longitud)];
+    L.marker(punto, { icon: iconoParada('#b03a2e'), zIndexOffset: 1000 })
+      .bindPopup(`<strong>Incidencia #${incidencia.id_incidencia}</strong><br>${textoSeguro(incidencia.tipo)} · ${textoSeguro(incidencia.estado)}<br>${textoSeguro(incidencia.ubicacion)}`)
+      .addTo(mapaRutas);
+    puntos.push(punto);
+  });
 
   const rutasOperativas = datos.rutas.filter((ruta) => ruta.paradas.length >= 1);
-  if (!rutasOperativas.length) {
-    resumenRutasMapa.innerHTML = '<strong>Rutas visibles:</strong> no hay rutas operativas para hoy.';
-    leyendaRutasMapa.innerHTML = '<li>El administrador debe asignar una ruta y cargar al menos una parada con coordenadas.</li>';
-    return;
+  resumenRutasMapa.innerHTML = `<strong>Rutas visibles:</strong> ${rutasOperativas.length} · Contenedores: ${contenedores.length} · Incidencias abiertas ubicadas: ${incidencias.length}.`;
+  leyendaRutasMapa.innerHTML = rutasOperativas.map((ruta, indice) => `<li><span class="punto-leyenda" style="background:${coloresRuta[indice % coloresRuta.length]}"></span> ${textoSeguro(ruta.nombre)} · Camión ${textoSeguro(ruta.matricula)}${ruta.paradas.length < 2 ? ' · Falta una parada para trazar el recorrido' : ''}</li>`).join('') || '<li>No hay rutas asignadas para hoy.</li>';
+  leyendaRutasMapa.innerHTML += '<li>Azul: contenedor · Rojo: incidencia abierta</li>';
+
+  for (const [indice, ruta] of rutasOperativas.entries()) {
+    try {
+      puntos.push(...await dibujarRuta(ruta, coloresRuta[indice % coloresRuta.length]));
+    } catch (error) {
+      leyendaRutasMapa.innerHTML += `<li>No se pudo trazar por calles ${textoSeguro(ruta.nombre)}.</li>`;
+    }
   }
-
-  resumenRutasMapa.innerHTML = `<strong>Rutas visibles:</strong> ${rutasOperativas.length} ruta(s) operativa(s).`;
-  leyendaRutasMapa.innerHTML = rutasOperativas.map((ruta, indice) => `<li><span class="punto-leyenda" style="background:${coloresRuta[indice % coloresRuta.length]}"></span> ${textoSeguro(ruta.nombre)} · Camión ${textoSeguro(ruta.matricula)}${ruta.paradas.length < 2 ? ' · Falta una parada para trazar el recorrido' : ''}</li>`).join('');
-  const puntos = (await Promise.all(rutasOperativas.map((ruta, indice) => dibujarRuta(ruta, coloresRuta[indice % coloresRuta.length])))).flat();
-  if (puntos.length) mapaRutas.fitBounds(L.latLngBounds(puntos), { padding: [24, 24] });
+  if (puntos.length) mapaRutas.fitBounds(L.latLngBounds(puntos), { padding: [24, 24], maxZoom: 15 });
 }
-
 cargarRutasPublicas().catch((error) => {
   resumenRutasMapa.innerHTML = `<strong>Rutas visibles:</strong> ${textoSeguro(error.message)}`;
   leyendaRutasMapa.innerHTML = '<li>No se pudo cargar el mapa operativo.</li>';

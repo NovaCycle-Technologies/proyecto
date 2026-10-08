@@ -1,13 +1,15 @@
 {
   "info": {
     "name": "NovaCycle Tech API",
-    "description": "Pruebas de la segunda entrega. Configura baseUrl como http://localhost/Proyecto/proyecto/.github/workflows.",
+    "description": "Pruebas de la API. Configura baseUrl como http://localhost/Proyecto/proyecto/.github/workflows e inicia sesión antes de probar las acciones privadas.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
     { "key": "baseUrl", "value": "http://localhost/Proyecto/proyecto/.github/workflows" },
     { "key": "email", "value": "" },
-    { "key": "password", "value": "" }
+    { "key": "password", "value": "" },
+    { "key": "idIncidencia", "value": "" },
+    { "key": "idContenedor", "value": "" }
   ],
   "item": [
     {
@@ -29,6 +31,9 @@
       "item": [
         { "name": "Mapa público", "request": { "method": "GET", "url": "{{baseUrl}}/Api_Operaciones/api_operaciones.php?accion=mapa_publico" } },
         { "name": "Mi ruta (Peón o Conductor)", "request": { "method": "GET", "url": "{{baseUrl}}/Api_Operaciones/api_operaciones.php?accion=mi_ruta" } },
+        { "name": "Mis incidencias (Peón o Conductor)", "request": { "method": "GET", "url": "{{baseUrl}}/Api_Operaciones/api_operaciones.php?accion=mis_incidencias" } },
+        { "name": "Incidencias abiertas (Operario)", "request": { "method": "GET", "url": "{{baseUrl}}/Api_Operaciones/api_operaciones.php?accion=incidencias&estado=abiertas" } },
+        { "name": "Incidencias cerradas (Operario)", "request": { "method": "GET", "url": "{{baseUrl}}/Api_Operaciones/api_operaciones.php?accion=incidencias&estado=cerradas" } },
         { "name": "Resumen (Operario)", "request": { "method": "GET", "url": "{{baseUrl}}/Api_Operaciones/api_operaciones.php?accion=resumen" } },
         { "name": "Reporte (Administrador)", "request": { "method": "GET", "url": "{{baseUrl}}/Api_Operaciones/api_operaciones.php?accion=reporte_admin" } },
         {
@@ -38,6 +43,24 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": { "mode": "raw", "raw": "{\n  \"ubicacion\": \"Ejido y Colonia\",\n  \"tipo\": \"Desborde\",\n  \"detalle\": \"Prueba desde Postman\"\n}" },
             "url": "{{baseUrl}}/Api_Operaciones/api_operaciones.php?accion=incidencia"
+          }
+        },
+        {
+          "name": "Registrar incidencia en contenedor (Peón o Conductor)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"id_contenedor\":\"{{idContenedor}}\",\"tipo\":\"Desborde\",\"detalle\":\"Prueba desde Postman\"}" },
+            "url": "{{baseUrl}}/Api_Operaciones/api_operaciones.php?accion=incidencia"
+          }
+        },
+        {
+          "name": "Cerrar incidencia (Operario)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"id\":\"{{idIncidencia}}\"}" },
+            "url": "{{baseUrl}}/Api_Operaciones/api_operaciones.php?accion=cerrar_incidencia"
           }
         }
       ]

@@ -2,13 +2,16 @@ USE novacycle;
 
 CREATE TABLE IF NOT EXISTS incidencias (
   id_incidencia INT AUTO_INCREMENT PRIMARY KEY,
+  id_contenedor INT NULL,
   ci_reportante VARCHAR(20) NOT NULL,
   ubicacion VARCHAR(150) NOT NULL,
   tipo VARCHAR(80) NOT NULL,
   detalle TEXT NOT NULL,
-  estado ENUM('pendiente', 'revisada') NOT NULL DEFAULT 'pendiente',
+  estado ENUM('pendiente', 'revisada', 'cerrada') NOT NULL DEFAULT 'pendiente',
   fecha_reporte DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  fecha_revision DATETIME NULL
+  fecha_revision DATETIME NULL,
+  fecha_cierre DATETIME NULL,
+  CONSTRAINT fk_incidencia_contenedor FOREIGN KEY (id_contenedor) REFERENCES contenedores(id_contenedor)
 );
 
 CREATE TABLE IF NOT EXISTS ingresos_residuos (

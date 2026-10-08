@@ -18,7 +18,7 @@
     <section class="resumen">
       <article><span>Ingresos de hoy</span><strong id="totalIngresos">0 kg</strong><small id="camionesRecibidos">0 camiones recibidos</small></article>
       <article><span>Capacidad utilizada</span><strong>68%</strong><small>Centro de acopio Norte</small></article>
-      <article><span>Incidencias activas</span><strong id="totalIncidencias">0</strong><small>Pendientes de revisión</small></article>
+      <article><span>Incidencias abiertas</span><strong id="totalIncidencias">0</strong><small>Pendientes o revisadas</small></article>
     </section>
     <div class="dos-columnas">
       <section class="panel">
@@ -45,10 +45,14 @@
       <div class="tabla-contenedor"><table><thead><tr><th>Camión</th><th>Modelo</th><th>Estado</th></tr></thead><tbody id="tablaCamiones"><tr><td colspan="3">Cargando camiones...</td></tr></tbody></table></div>
     </section>
     <section class="panel">
-      <h2>Incidencias a revisar</h2>
+      <h2>Incidencias abiertas</h2>
       <ul id="listaIncidencias" class="incidencias"><li>Cargando incidencias...</li></ul>
     </section>
+    <section class="panel">
+      <h2>Incidencias cerradas</h2>
+      <ul id="listaIncidenciasCerradas" class="incidencias"><li>Cargando historial...</li></ul>
+    </section>
   </main>
-  <script src="operario.js"></script>
+  <script src="operario.js?v=3"></script>
 </body>
 </html>

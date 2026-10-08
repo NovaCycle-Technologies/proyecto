@@ -7,15 +7,30 @@ class ControladorOperaciones
     private ModeloOperaciones $modelo;
     public function __construct() { $this->modelo = new ModeloOperaciones(); }
     public function camiones(): array { return ['ok' => true, 'camiones' => $this->modelo->camiones()]; }
-    public function incidencias(): array { return ['ok' => true, 'incidencias' => $this->modelo->incidencias()]; }
+    public function misIncidencias(string $ci): array { return ['ok' => true, 'incidencias' => $this->modelo->misIncidencias($ci)]; }
+    public function incidencias(string $filtro): array { return ['ok' => true, 'incidencias' => $this->modelo->incidencias($filtro)]; }
     public function resumen(): array { return ['ok' => true, 'resumen' => $this->modelo->resumen()]; }
     public function crearIncidencia(array $datos, string $ci): array {
-        foreach (['ubicacion', 'tipo', 'detalle'] as $campo) if (trim((string)($datos[$campo] ?? '')) === '') return ['ok' => false, 'mensaje' => 'Completá todos los datos de la incidencia.'];
-        $this->modelo->crearIncidencia(['ubicacion' => trim($datos['ubicacion']), 'tipo' => trim($datos['tipo']), 'detalle' => trim($datos['detalle'])], $ci);
+        $tipo = trim((string)($datos['tipo'] ?? ''));
+        $detalle = trim((string)($datos['detalle'] ?? ''));
+        $idContenedor = (int)($datos['id_contenedor'] ?? 0);
+        if ($tipo === '' || $detalle === '') return ['ok' => false, 'mensaje' => 'Completá el tipo y el detalle de la incidencia.'];
+        if ($idContenedor > 0) {
+            $contenedor = $this->modelo->contenedorEnRuta($idContenedor, $ci);
+            if (!$contenedor) return ['ok' => false, 'mensaje' => 'Ese contenedor no pertenece a tu ruta de hoy.'];
+            $ubicacion = $contenedor['ubicacion'];
+        } else {
+            $ubicacion = trim((string)($datos['ubicacion'] ?? ''));
+            if ($ubicacion === '') return ['ok' => false, 'mensaje' => 'Indicá la ubicación del problema.'];
+        }
+        $this->modelo->crearIncidencia(['ubicacion' => $ubicacion, 'tipo' => $tipo, 'detalle' => $detalle, 'id_contenedor' => $idContenedor ?: null], $ci);
         return ['ok' => true, 'mensaje' => 'Incidencia enviada correctamente.'];
     }
     public function revisarIncidencia(array $datos): array {
         return $this->modelo->revisarIncidencia((int)($datos['id'] ?? 0)) ? ['ok' => true, 'mensaje' => 'Incidencia marcada como revisada.'] : ['ok' => false, 'mensaje' => 'No se pudo actualizar la incidencia.'];
+    }
+    public function cerrarIncidencia(array $datos): array {
+        return $this->modelo->cerrarIncidencia((int)($datos['id'] ?? 0)) ? ['ok' => true, 'mensaje' => 'Incidencia cerrada correctamente.'] : ['ok' => false, 'mensaje' => 'La incidencia no existe o ya está cerrada.'];
     }
     public function estadoCamion(array $datos): array {
         $estado = $datos['estado'] ?? ''; $id = (int)($datos['id_camion'] ?? 0);
@@ -49,5 +64,5 @@ class ControladorOperaciones
     public function completarParada(array $datos, string $ci): array { return $this->modelo->completarParada((int)($datos['id_asignacion'] ?? 0), (int)($datos['id_parada'] ?? 0), $ci) ? ['ok' => true, 'mensaje' => 'Parada registrada como completada.'] : ['ok' => false, 'mensaje' => 'La parada ya estaba completada.']; }
     public function reporteAdmin(): array { return ['ok' => true, 'reporte' => $this->modelo->reporteAdmin()]; }
     public function dashboardAdmin(): array { return ['ok' => true, 'dashboard' => $this->modelo->dashboardAdmin()]; }
-    public function rutasPublicas(): array { return ['ok' => true, 'rutas' => $this->modelo->rutasPublicas()]; }
+    public function rutasPublicas(): array { return ['ok' => true, 'rutas' => $this->modelo->rutasPublicas(), 'contenedores' => $this->modelo->contenedoresPublicos(), 'incidencias' => $this->modelo->incidenciasPublicas()]; }
 }
