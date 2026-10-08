@@ -36,9 +36,6 @@ class ModeloUsuarios
 
     public function obtenerRol(string $ci): ?string
     {
-        // Peón y conductor también pueden estar asociados a una cuadrilla de
-        // operarios. Se buscan primero sus roles específicos para no perder
-        // el destino correcto al iniciar sesión.
         $tablas = ['admin_municipal' => 'admins', 'peon' => 'peones', 'conductor' => 'conductores', 'operario' => 'operarios'];
         foreach ($tablas as $rol => $tabla) {
             $consulta = $this->conexion->prepare("SELECT ci FROM {$tabla} WHERE ci = ?");
@@ -72,15 +69,9 @@ class ModeloUsuarios
                 $this->conexion->rollBack();
                 return false;
             }
-            // Peones y conductores heredan de la tabla base operarios por una
-            // clave foránea. Su rol final se determina por peones/conductores.
-            $base = $this->conexion->prepare('INSERT INTO operarios (ci) VALUES (?)');
-            $base->execute([$ci]);
-            if ($rol !== 'operario') {
-                $tabla = $rol === 'peon' ? 'peones' : 'conductores';
-                $agregar = $this->conexion->prepare("INSERT INTO {$tabla} (ci) VALUES (?)");
-                $agregar->execute([$ci]);
-            }
+            $tabla = ['peon' => 'peones', 'conductor' => 'conductores', 'operario' => 'operarios'][$rol];
+            $agregar = $this->conexion->prepare("INSERT INTO {$tabla} (ci) VALUES (?)");
+            $agregar->execute([$ci]);
             $this->conexion->commit();
             return true;
         } catch (Throwable $error) {
