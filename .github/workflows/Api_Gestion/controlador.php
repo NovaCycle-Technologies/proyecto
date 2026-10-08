@@ -64,9 +64,14 @@ class ControladorContenedores
         $estado = $datos['estado'] ?? '';
         $tipoResiduo = trim($datos['tipo_residuo'] ?? '');
         $capacidad = (int) ($datos['capacidad_litros'] ?? 0);
+        $latitud = filter_var($datos['latitud'] ?? null, FILTER_VALIDATE_FLOAT);
+        $longitud = filter_var($datos['longitud'] ?? null, FILTER_VALIDATE_FLOAT);
 
-        if ($calle === '' || $numero === '' || $tipoResiduo === '' || $capacidad <= 0) {
+        if ($calle === '' || $numero === '' || $tipoResiduo === '' || $capacidad <= 0 || $latitud === false || $longitud === false) {
             return ['ok' => false, 'mensaje' => 'Completá todos los campos correctamente.'];
+        }
+        if ($latitud < -35.15 || $latitud > -34.65 || $longitud < -56.45 || $longitud > -55.85) {
+            return ['ok' => false, 'mensaje' => 'Las coordenadas deben corresponder a una ubicación de Montevideo.'];
         }
         if (!in_array($estado, self::ESTADOS, true)) {
             return ['ok' => false, 'mensaje' => 'El estado no es válido.'];
@@ -77,7 +82,9 @@ class ControladorContenedores
             'numero' => $numero,
             'estado' => $estado,
             'tipo_residuo' => $tipoResiduo,
-            'capacidad_litros' => $capacidad
+            'capacidad_litros' => $capacidad,
+            'latitud' => $latitud,
+            'longitud' => $longitud
         ]];
     }
 }

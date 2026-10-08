@@ -5,6 +5,13 @@ class ModeloCamiones
 {
     private PDO $conexion;
 
+    private const RUTA_VIGENTE = "SELECT 1 FROM asignaciones_ruta a
+        INNER JOIN rutas r ON r.id_ruta = a.id_ruta
+        WHERE a.id_camion = c.id_camion
+          AND a.fecha >= CURDATE()
+          AND a.estado IN ('asignada', 'en_curso')
+          AND r.activa = 1";
+
     public function __construct()
     {
         $this->conexion = new PDO(
@@ -18,9 +25,20 @@ class ModeloCamiones
     public function listar(): array
     {
         $consulta = $this->conexion->query(
-            'SELECT * FROM camiones WHERE activo = 1 ORDER BY id_camion DESC'
+            'SELECT c.*, EXISTS (' . self::RUTA_VIGENTE . ') AS en_uso
+             FROM camiones c WHERE c.activo = 1 ORDER BY c.id_camion DESC'
         );
         return $consulta->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function estaEnUso(int $id): bool
+    {
+        $consulta = $this->conexion->prepare(
+            'SELECT EXISTS (SELECT 1 FROM camiones c WHERE c.id_camion = ?
+             AND EXISTS (' . self::RUTA_VIGENTE . '))'
+        );
+        $consulta->execute([$id]);
+        return (bool) $consulta->fetchColumn();
     }
 
     public function crear(array $camion): int
@@ -41,9 +59,10 @@ class ModeloCamiones
     public function actualizar(int $id, array $camion): bool
     {
         $consulta = $this->conexion->prepare(
-            'UPDATE camiones
+            'UPDATE camiones c
              SET matricula = ?, modelo = ?, capacidad_kg = ?, estado = ?
-             WHERE id_camion = ? AND activo = 1'
+             WHERE c.id_camion = ? AND c.activo = 1
+               AND NOT EXISTS (' . self::RUTA_VIGENTE . ')'
         );
         $consulta->execute([
             $camion['matricula'],
@@ -58,7 +77,9 @@ class ModeloCamiones
     public function darDeBaja(int $id): bool
     {
         $consulta = $this->conexion->prepare(
-            'UPDATE camiones SET activo = 0 WHERE id_camion = ? AND activo = 1'
+            'UPDATE camiones c SET activo = 0
+             WHERE c.id_camion = ? AND c.activo = 1
+               AND NOT EXISTS (' . self::RUTA_VIGENTE . ')'
         );
         $consulta->execute([$id]);
         return $consulta->rowCount() === 1;
