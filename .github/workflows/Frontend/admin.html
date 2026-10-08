@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Administración | NovaCycle Tech</title>
-    <link rel="stylesheet" href="admin.css" />
+    <link rel="stylesheet" href="admin.css?v=2" />
   </head>
 
   <body>
@@ -118,7 +118,7 @@
 
       <section id="camiones">
         <h2>Gestión de camiones</h2>
-        <p>Registrá, modificá o da de baja los camiones de recolección.</p>
+        <p>Registrá, modificá o da de baja los camiones de recolección. Los que tienen una ruta vigente no se pueden editar ni dar de baja.</p>
 
         <form id="formCamion">
           <input type="hidden" id="idCamion" />
@@ -153,6 +153,7 @@
               <th>Modelo</th>
               <th>Capacidad</th>
               <th>Estado</th>
+              <th>Uso</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -517,6 +518,7 @@
 
           datos.camiones.forEach(function (camion) {
             const fila = document.createElement('tr');
+            const enUso = Number(camion.en_uso) === 1;
 
             fila.innerHTML = `
             <td>${camion.id_camion}</td>
@@ -524,9 +526,10 @@
             <td>${textoSeguro(camion.modelo)}</td>
             <td>${camion.capacidad_kg} kg</td>
             <td>${nombreEstadoCamion(camion.estado)}</td>
+            <td>${enUso ? 'Asignado a ruta' : 'Libre'}</td>
             <td>
-              <button type="button" class="editarCamion">Editar</button>
-              <button type="button" class="bajaCamion">Dar de baja</button>
+              <button type="button" class="editarCamion" ${enUso ? 'disabled title="Camión asignado a una ruta vigente"' : ''}>Editar</button>
+              <button type="button" class="bajaCamion" ${enUso ? 'disabled title="Camión asignado a una ruta vigente"' : ''}>Dar de baja</button>
             </td>
           `;
 
@@ -584,6 +587,11 @@
       });
 
       function editarCamion(camion) {
+        if (Number(camion.en_uso) === 1) {
+          mensajeCamiones.textContent = 'El camión está asignado a una ruta vigente y no se puede editar.';
+          return;
+        }
+
         idCamion.value = camion.id_camion;
         document.getElementById('matricula').value = camion.matricula;
         document.getElementById('modelo').value = camion.modelo;
