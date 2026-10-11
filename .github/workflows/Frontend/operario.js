@@ -1,15 +1,16 @@
 const API_OPERACIONES = '../Api_Operaciones/api_operaciones.php';
+const alertasOperario = document.getElementById('alertasOperario');
 
 const usuarioOperario = JSON.parse(sessionStorage.getItem('usuarioNovaCycle') || 'null');
 
 async function api(accion, datos = null) {
-  const opciones = { headers: { Accept: 'application/json' } };
+  const opciones = { headers: { Accept: 'application/json' }, cache: 'no-store' };
   if (datos) {
     opciones.method = 'POST';
     opciones.headers['Content-Type'] = 'application/json';
     opciones.body = JSON.stringify(datos);
   }
-  const respuesta = await fetch(`${API_OPERACIONES}?accion=${accion}`, opciones);
+  const respuesta = await fetchAutenticado(`${API_OPERACIONES}?accion=${accion}`, opciones);
   const resultado = await respuesta.json();
   if (!respuesta.ok || !resultado.ok)
     throw new Error(resultado.mensaje || 'No se pudo completar la operación.');
@@ -19,6 +20,23 @@ function textoSeguro(valor) {
   const nodo = document.createElement('span');
   nodo.textContent = valor;
   return nodo.innerHTML;
+}
+function mostrarAlertasOperario(incidencias) {
+  alertasOperario.replaceChildren();
+  if (incidencias.length === 0) {
+    alertasOperario.textContent = 'Sin alertas activas por ahora.';
+    return;
+  }
+
+  const ultima = incidencias[0];
+  const titulo = document.createElement('strong');
+  const detalle = document.createElement('span');
+  const enlace = document.createElement('a');
+  titulo.textContent = `${incidencias.length} ${incidencias.length === 1 ? 'incidencia abierta' : 'incidencias abiertas'}`;
+  detalle.textContent = `Última: #${ultima.id_incidencia} · ${ultima.tipo} · ${ultima.ubicacion}`;
+  enlace.href = '#incidencias-abiertas';
+  enlace.textContent = 'Ver incidencias';
+  alertasOperario.append(titulo, detalle, enlace);
 }
 function cargarCamiones() {
   return api('camiones').then(({ camiones }) => {
@@ -58,6 +76,7 @@ function cargarCerradas() {
 }
 function cargarIncidencias() {
   return api('incidencias&estado=abiertas').then(({ incidencias }) => {
+    mostrarAlertasOperario(incidencias);
     listaIncidencias.innerHTML =
       incidencias
         .map((i) => {
@@ -85,9 +104,16 @@ if (!usuarioOperario || usuarioOperario.rol !== 'operario') {
   window.location.replace('login.html');
 } else {
   saludo.textContent = `Hola, ${usuarioOperario.nombre}`;
-  Promise.all([cargarCamiones(), cargarResumen(), cargarIncidencias()]).catch((error) =>
-    alert(error.message)
-  );
+  Promise.all([cargarCamiones(), cargarResumen(), cargarIncidencias()]).catch((error) => {
+    alertasOperario.textContent = `No se pudieron consultar las alertas: ${error.message}`;
+  });
+  setInterval(() => {
+    if (document.visibilityState !== 'hidden') {
+      Promise.all([cargarResumen(), cargarIncidencias()]).catch((error) => {
+        alertasOperario.textContent = `No se pudieron consultar las alertas: ${error.message}`;
+      });
+    }
+  }, 15000);
 }
 formIngreso.addEventListener('submit', async (evento) => {
   evento.preventDefault();

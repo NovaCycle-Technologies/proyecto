@@ -54,6 +54,25 @@ h2 {
 .panel > p {
   color: #57685c;
 }
+.alertas-operario {
+  background: #fff7e7;
+  border-left: 5px solid #b66b00;
+  color: #533800;
+  padding: 14px 16px;
+}
+.alertas-operario strong,
+.alertas-operario span,
+.alertas-operario a {
+  display: block;
+}
+.alertas-operario span,
+.alertas-operario a {
+  margin-top: 6px;
+}
+.alertas-operario a {
+  color: #765000;
+  font-weight: bold;
+}
 .resumen,
 .dos-columnas {
   display: grid;

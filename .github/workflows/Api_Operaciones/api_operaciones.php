@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-session_start();
+require_once __DIR__ . '/../Api_Usuarios/sesion.php';
 require_once __DIR__ . '/controlador.php';
 header('Content-Type: application/json; charset=utf-8');
 function responder(array $resultado, int $codigo = 200): never
@@ -17,6 +17,9 @@ function permitir(array $roles): void
 }
 $metodo = $_SERVER['REQUEST_METHOD'];
 $accion = $_GET['accion'] ?? '';
+if ($metodo !== 'GET' || $accion !== 'mapa_publico') {
+    iniciarSesionActual();
+}
 $datos = json_decode(file_get_contents('php://input'), true);
 $datos = is_array($datos) ? $datos : $_POST;
 $controlador = new ControladorOperaciones();

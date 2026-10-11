@@ -46,6 +46,7 @@ if (formularioLogin) {
     try {
       const resultado = await llamarApiUsuarios('iniciar_sesion', Object.fromEntries(new FormData(formularioLogin)));
       sessionStorage.setItem('usuarioNovaCycle', JSON.stringify(resultado.usuario));
+      sessionStorage.setItem('pestanaNovaCycle', resultado.pestana);
       const destinos = {
         admin_municipal: 'admin.html',
         peon: 'cuadrilla.html',

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-session_start();
+require_once __DIR__ . '/sesion.php';
 require_once __DIR__ . '/Controlador.php';
 
 header('Content-Type: application/json; charset=utf-8');
@@ -31,9 +31,10 @@ if ($accion === 'registrar') {
 } elseif ($accion === 'iniciar_sesion') {
     $resultado = $controlador->iniciarSesion($datos);
     if ($resultado['ok']) {
-        $_SESSION['usuario'] = $resultado['usuario'];
+        $resultado['pestana'] = crearSesionUsuario($resultado['usuario']);
     }
 } elseif ($accion === 'listar_pendientes' || $accion === 'aprobar_usuario') {
+    iniciarSesionActual();
     if (($_SESSION['usuario']['rol'] ?? '') !== 'admin_municipal') {
         $resultado = ['ok' => false, 'mensaje' => 'Solo el administrador municipal puede realizar esta acción.'];
         responder($resultado, 403);

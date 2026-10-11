@@ -8,8 +8,21 @@
     { "key": "baseUrl", "value": "http://localhost/Proyecto/proyecto/.github/workflows" },
     { "key": "email", "value": "" },
     { "key": "password", "value": "" },
+    { "key": "pestana", "value": "" },
     { "key": "idIncidencia", "value": "" },
     { "key": "idContenedor", "value": "" }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const pestana = pm.collectionVariables.get('pestana');",
+          "if (pestana) pm.request.headers.upsert({ key: 'X-NovaCycle-Tab', value: pestana });"
+        ]
+      }
+    }
   ],
   "item": [
     {
@@ -22,7 +35,19 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}" },
             "url": "{{baseUrl}}/Api_Usuarios/api_usuarios.php?accion=iniciar_sesion"
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const respuesta = pm.response.json();",
+                  "if (respuesta.ok && respuesta.pestana) pm.collectionVariables.set('pestana', respuesta.pestana);"
+                ]
+              }
+            }
+          ]
         }
       ]
     },

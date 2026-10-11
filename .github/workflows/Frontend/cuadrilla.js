@@ -9,7 +9,7 @@ async function api(accion, datos = null) {
     opciones.headers['Content-Type'] = 'application/json';
     opciones.body = JSON.stringify(datos);
   }
-  const respuesta = await fetch(`${API_OPERACIONES}?accion=${accion}`, opciones);
+  const respuesta = await fetchAutenticado(`${API_OPERACIONES}?accion=${accion}`, opciones);
   const resultado = await respuesta.json();
   if (!respuesta.ok || !resultado.ok)
     throw new Error(resultado.mensaje || 'No se pudo completar la operación.');

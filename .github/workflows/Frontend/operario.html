@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Operario | NovaCycle Tech</title>
-    <link rel="stylesheet" href="operario.css" />
+    <link rel="stylesheet" href="operario.css?v=2" />
   </head>
   <body>
     <header class="barra-superior">
@@ -17,6 +17,10 @@
       <p class="descripcion">
         Controlá el ingreso de residuos, el estado de la maquinaria y las tareas de la cuadrilla.
       </p>
+      <section class="panel" aria-live="polite">
+        <h2>Alertas activas</h2>
+        <div id="alertasOperario" class="alertas-operario">Consultando incidencias...</div>
+      </section>
       <section class="resumen">
         <article>
           <span>Ingresos de hoy</span><strong id="totalIngresos">0 kg</strong
@@ -95,7 +99,7 @@
           </table>
         </div>
       </section>
-      <section class="panel">
+      <section class="panel" id="incidencias-abiertas">
         <h2>Incidencias abiertas</h2>
         <ul id="listaIncidencias" class="incidencias">
           <li>Cargando incidencias...</li>
@@ -108,6 +112,7 @@
         </ul>
       </section>
     </main>
-    <script src="operario.js?v=3"></script>
+    <script src="sesion.js?v=2"></script>
+    <script src="operario.js?v=5"></script>
   </body>
 </html>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Administración | NovaCycle Tech</title>
-    <link rel="stylesheet" href="admin.css?v=2" />
+    <link rel="stylesheet" href="admin.css?v=3" />
   </head>
 
   <body>
@@ -20,6 +20,14 @@
     <main>
       <h1>Panel de administración</h1>
       <p class="descripcion">Administrá usuarios, contenedores y camiones del sistema.</p>
+
+      <section id="alertas">
+        <h2>Alertas activas</h2>
+        <p>Incidencias sin cerrar y contenedores que necesitan atención.</p>
+        <div id="alertasDashboard" class="alertas-dashboard" aria-live="polite">
+          <p class="alertas-vacias">Consultando alertas...</p>
+        </div>
+      </section>
 
       <section id="usuarios">
         <h2>Solicitudes de usuarios</h2>
@@ -233,6 +241,7 @@
       </section>
     </main>
 
+    <script src="sesion.js?v=2"></script>
     <script>
       const apiUsuarios = '/Proyecto/proyecto/.github/workflows/Api_Usuarios/api_usuarios.php';
 
@@ -280,7 +289,7 @@
 
       async function cargarPendientes() {
         try {
-          const respuesta = await fetch(apiUsuarios + '?accion=listar_pendientes', {
+          const respuesta = await fetchAutenticado(apiUsuarios + '?accion=listar_pendientes', {
             method: 'POST',
             headers: { Accept: 'application/json' }
           });
@@ -341,7 +350,7 @@
         datosFormulario.append('ci', ci);
         datosFormulario.append('rol', rol);
 
-        const respuesta = await fetch(apiUsuarios + '?accion=aprobar_usuario', {
+        const respuesta = await fetchAutenticado(apiUsuarios + '?accion=aprobar_usuario', {
           method: 'POST',
           headers: { Accept: 'application/json' },
           body: datosFormulario
@@ -354,7 +363,7 @@
 
       async function cargarContenedores() {
         try {
-          const respuesta = await fetch(apiGestion + '?accion=listar');
+          const respuesta = await fetchAutenticado(apiGestion + '?accion=listar');
           const datos = await respuesta.json();
 
           if (!respuesta.ok || !datos.ok) {
@@ -434,7 +443,7 @@
               body: new URLSearchParams(datos)
             };
 
-        const respuesta = await fetch(url, opciones);
+        const respuesta = await fetchAutenticado(url, opciones);
         const resultado = await respuesta.json();
 
         mensajeContenedores.textContent = resultado.mensaje;
@@ -475,7 +484,7 @@
           return;
         }
 
-        const respuesta = await fetch(apiGestion + '?accion=baja&id=' + id, { method: 'DELETE' });
+        const respuesta = await fetchAutenticado(apiGestion + '?accion=baja&id=' + id, { method: 'DELETE' });
 
         const resultado = await respuesta.json();
         mensajeContenedores.textContent = resultado.mensaje;
@@ -497,7 +506,7 @@
 
       async function cargarCamiones() {
         try {
-          const respuesta = await fetch(apiCamiones + '?accion=listar');
+          const respuesta = await fetchAutenticado(apiCamiones + '?accion=listar');
           const datos = await respuesta.json();
 
           if (!respuesta.ok || !datos.ok) {
@@ -575,7 +584,7 @@
               body: new URLSearchParams(datos)
             };
 
-        const respuesta = await fetch(url, opciones);
+        const respuesta = await fetchAutenticado(url, opciones);
         const resultado = await respuesta.json();
 
         mensajeCamiones.textContent = resultado.mensaje;
@@ -621,7 +630,7 @@
           return;
         }
 
-        const respuesta = await fetch(apiCamiones + '?accion=baja&id=' + id, { method: 'DELETE' });
+        const respuesta = await fetchAutenticado(apiCamiones + '?accion=baja&id=' + id, { method: 'DELETE' });
 
         const resultado = await respuesta.json();
         mensajeCamiones.textContent = resultado.mensaje;
@@ -635,7 +644,7 @@
       cargarContenedores();
       cargarCamiones();
     </script>
-    <script src="admin-operaciones.js"></script>
-    <script src="admin-dashboard.js"></script>
+    <script src="admin-operaciones.js?v=2"></script>
+    <script src="admin-dashboard.js?v=3"></script>
   </body>
 </html>
