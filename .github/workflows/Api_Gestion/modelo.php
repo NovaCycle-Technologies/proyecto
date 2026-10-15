@@ -5,6 +5,10 @@ class ModeloContenedores
 {
     private PDO $conexion;
 
+    private const RUTA_ACTIVA = 'SELECT 1 FROM paradas_ruta p
+        INNER JOIN rutas r ON r.id_ruta = p.id_ruta
+        WHERE p.id_contenedor = c.id_contenedor AND r.activa = 1';
+
     public function __construct()
     {
         $this->conexion = new PDO(
@@ -18,7 +22,8 @@ class ModeloContenedores
     public function listar(): array
     {
         $consulta = $this->conexion->query(
-            'SELECT * FROM contenedores WHERE activo = 1 ORDER BY id_contenedor DESC'
+            'SELECT c.*, EXISTS (' . self::RUTA_ACTIVA . ') AS en_uso
+             FROM contenedores c WHERE c.activo = 1 ORDER BY c.id_contenedor DESC'
         );
         return $consulta->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -26,34 +31,28 @@ class ModeloContenedores
     public function buscarPorId(int $id): ?array
     {
         $consulta = $this->conexion->prepare(
-            'SELECT * FROM contenedores WHERE id_contenedor = ? AND activo = 1'
+            'SELECT c.*, EXISTS (' . self::RUTA_ACTIVA . ') AS en_uso
+             FROM contenedores c WHERE c.id_contenedor = ? AND c.activo = 1'
         );
         $consulta->execute([$id]);
         return $consulta->fetch(PDO::FETCH_ASSOC) ?: null;
     }
 
+    public function estaEnUso(int $id): bool
+    {
+        $consulta = $this->conexion->prepare(
+            'SELECT EXISTS (SELECT 1 FROM contenedores c WHERE c.id_contenedor = ?
+             AND EXISTS (' . self::RUTA_ACTIVA . '))'
+        );
+        $consulta->execute([$id]);
+        return (bool) $consulta->fetchColumn();
+    }
+
     public function crear(array $contenedor): int
     {
         $consulta = $this->conexion->prepare(
-            'INSERT INTO contenedores (calle, numero, estado, tipo_residuo, capacidad_litros)
-             VALUES (?, ?, ?, ?, ?)'
-        );
-        $consulta->execute([
-            $contenedor['calle'],
-            $contenedor['numero'],
-            $contenedor['estado'],
-            $contenedor['tipo_residuo'],
-            $contenedor['capacidad_litros']
-        ]);
-        return (int) $this->conexion->lastInsertId();
-    }
-
-    public function actualizar(int $id, array $contenedor): bool
-    {
-        $consulta = $this->conexion->prepare(
-            'UPDATE contenedores
-             SET calle = ?, numero = ?, estado = ?, tipo_residuo = ?, capacidad_litros = ?
-             WHERE id_contenedor = ? AND activo = 1'
+            'INSERT INTO contenedores (calle, numero, estado, tipo_residuo, capacidad_litros, latitud, longitud)
+             VALUES (?, ?, ?, ?, ?, ?, ?)'
         );
         $consulta->execute([
             $contenedor['calle'],
@@ -61,6 +60,28 @@ class ModeloContenedores
             $contenedor['estado'],
             $contenedor['tipo_residuo'],
             $contenedor['capacidad_litros'],
+            $contenedor['latitud'],
+            $contenedor['longitud']
+        ]);
+        return (int) $this->conexion->lastInsertId();
+    }
+
+    public function actualizar(int $id, array $contenedor): bool
+    {
+        $consulta = $this->conexion->prepare(
+            'UPDATE contenedores c
+             SET calle = ?, numero = ?, estado = ?, tipo_residuo = ?, capacidad_litros = ?, latitud = ?, longitud = ?
+             WHERE c.id_contenedor = ? AND c.activo = 1
+               AND NOT EXISTS (' . self::RUTA_ACTIVA . ')'
+        );
+        $consulta->execute([
+            $contenedor['calle'],
+            $contenedor['numero'],
+            $contenedor['estado'],
+            $contenedor['tipo_residuo'],
+            $contenedor['capacidad_litros'],
+            $contenedor['latitud'],
+            $contenedor['longitud'],
             $id
         ]);
         return $consulta->rowCount() === 1;
@@ -69,7 +90,9 @@ class ModeloContenedores
     public function darDeBaja(int $id): bool
     {
         $consulta = $this->conexion->prepare(
-            'UPDATE contenedores SET activo = 0 WHERE id_contenedor = ? AND activo = 1'
+            'UPDATE contenedores c SET activo = 0
+             WHERE c.id_contenedor = ? AND c.activo = 1
+               AND NOT EXISTS (' . self::RUTA_ACTIVA . ')'
         );
         $consulta->execute([$id]);
         return $consulta->rowCount() === 1;

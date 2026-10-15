@@ -78,5 +78,44 @@ class ControladorUsuarios
         }
         return ['ok' => true, 'mensaje' => 'Usuario aprobado correctamente.'];
     }
-    
+
+    public function listarUsuarios(): array
+    {
+        return ['ok' => true, 'usuarios' => $this->modelo->listarUsuarios()];
+    }
+
+    public function modificarUsuario(array $datos): array
+    {
+        $ci = trim((string) ($datos['ci'] ?? ''));
+        $nombre = trim((string) ($datos['nombre'] ?? ''));
+        $apellido = trim((string) ($datos['apellido'] ?? ''));
+        $email = strtolower(trim((string) ($datos['email'] ?? '')));
+        $rol = (string) ($datos['rol'] ?? '');
+
+        if ($ci === '' || $nombre === '' || $apellido === '' || $email === '') {
+            return ['ok' => false, 'mensaje' => 'Completá todos los datos del usuario.'];
+        }
+        if (mb_strlen($nombre) > 30 || mb_strlen($apellido) > 30 || mb_strlen($email) > 30
+            || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return ['ok' => false, 'mensaje' => 'Nombre, apellido o correo no válidos.'];
+        }
+        if (!in_array($rol, ['peon', 'conductor', 'operario'], true)) {
+            return ['ok' => false, 'mensaje' => 'El rol no es válido.'];
+        }
+
+        return $this->modelo->modificarUsuario($ci, $nombre, $apellido, $email, $rol);
+    }
+
+    public function eliminarUsuario(array $datos, string $ciAdmin): array
+    {
+        $ci = trim((string) ($datos['ci'] ?? ''));
+        if ($ci === '') {
+            return ['ok' => false, 'mensaje' => 'Seleccioná un usuario.'];
+        }
+        if ($ci === $ciAdmin) {
+            return ['ok' => false, 'mensaje' => 'No podés eliminar tu propia cuenta.'];
+        }
+
+        return $this->modelo->eliminarUsuario($ci);
+    }
 }

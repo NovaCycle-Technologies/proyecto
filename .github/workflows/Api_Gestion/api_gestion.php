@@ -1,7 +1,8 @@
 <?php
 declare(strict_types=1);
 
-session_start();
+require_once __DIR__ . '/../Api_Usuarios/sesion.php';
+iniciarSesionActual();
 require_once __DIR__ . '/Controlador.php';
 
 header('Content-Type: application/json; charset=utf-8');
@@ -48,12 +49,14 @@ if ($metodo === 'POST' && $accion === 'crear') {
 
 if ($metodo === 'PUT' && $accion === 'actualizar') {
     $resultado = $controlador->actualizar((int) ($_GET['id'] ?? 0), $datos);
-    responder($resultado, $resultado['ok'] ? 200 : 400);
+    $codigo = $resultado['ok'] ? 200 : (($resultado['en_uso'] ?? false) ? 409 : 400);
+    responder($resultado, $codigo);
 }
 
 if ($metodo === 'DELETE' && $accion === 'baja') {
     $resultado = $controlador->darDeBaja((int) ($_GET['id'] ?? 0));
-    responder($resultado, $resultado['ok'] ? 200 : 404);
+    $codigo = $resultado['ok'] ? 200 : (($resultado['en_uso'] ?? false) ? 409 : 404);
+    responder($resultado, $codigo);
 }
 
 responder(['ok' => false, 'mensaje' => 'Ruta o método no válido.'], 404);
