@@ -7,6 +7,7 @@ if (PHP_SAPI !== 'cli') {
 }
 
 require_once __DIR__ . '/../.github/workflows/Api_Usuarios/sesion.php';
+require_once __DIR__ . '/cuentas_prueba.php';
 
 function comprobar(bool $condicion, string $mensaje): void
 {
@@ -15,10 +16,15 @@ function comprobar(bool $condicion, string $mensaje): void
     }
 }
 
-$pestanaAdmin = crearSesionUsuario(['ci' => 'admin-prueba', 'rol' => 'admin_municipal']);
-$sesionAdmin = session_id();
-$pestanaPeon = crearSesionUsuario(['ci' => 'peon-prueba', 'rol' => 'peon']);
-$sesionPeon = session_id();
+[$conexion, $cuentas] = crearCuentasPrueba(['admin_municipal', 'peon']);
+$sesiones = [];
+try {
+    $pestanaAdmin = crearSesionUsuario(['ci' => $cuentas['admin_municipal'], 'rol' => 'admin_municipal']);
+    $sesionAdmin = session_id();
+    $sesiones[] = [$pestanaAdmin, $sesionAdmin];
+    $pestanaPeon = crearSesionUsuario(['ci' => $cuentas['peon'], 'rol' => 'peon']);
+    $sesionPeon = session_id();
+    $sesiones[] = [$pestanaPeon, $sesionPeon];
 
 $_COOKIE[nombreSesionPestana($pestanaAdmin)] = $sesionAdmin;
 $_COOKIE[nombreSesionPestana($pestanaPeon)] = $sesionPeon;
@@ -39,12 +45,15 @@ foreach ([
     session_write_close();
 }
 
-foreach ([[$pestanaAdmin, $sesionAdmin], [$pestanaPeon, $sesionPeon]] as [$pestana, $sesion]) {
-    session_name(nombreSesionPestana($pestana));
-    session_id($sesion);
-    session_start();
-    session_destroy();
-    session_write_close();
+} finally {
+    foreach ($sesiones as [$pestana, $sesion]) {
+        session_name(nombreSesionPestana($pestana));
+        session_id($sesion);
+        session_start();
+        session_destroy();
+        session_write_close();
+    }
+    eliminarCuentasPrueba($conexion, $cuentas);
 }
 
 echo "Sesiones independientes: correcto\n";

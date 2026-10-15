@@ -7,6 +7,7 @@ if (PHP_SAPI !== 'cli') {
 }
 
 require_once __DIR__ . '/../.github/workflows/Api_Usuarios/sesion.php';
+require_once __DIR__ . '/cuentas_prueba.php';
 
 function solicitar(string $accion, string $pestana, string $sesion, string $cookies = '', string $rol = ''): array
 {
@@ -36,9 +37,10 @@ function solicitar(string $accion, string $pestana, string $sesion, string $cook
 $sesiones = [];
 $sesionesAnteriores = [];
 $correcto = false;
+[$conexion, $cuentas] = crearCuentasPrueba(['admin_municipal', 'peon']);
 try {
     foreach (['admin_municipal', 'peon'] as $rol) {
-        $pestana = crearSesionUsuario(['ci' => $rol . '-prueba', 'rol' => $rol]);
+        $pestana = crearSesionUsuario(['ci' => $cuentas[$rol], 'rol' => $rol]);
         $sesiones[$rol] = [$pestana, session_id()];
     }
 
@@ -58,7 +60,7 @@ try {
     session_id('');
     session_name('PHPSESSID');
     session_start();
-    $_SESSION['usuario'] = ['ci' => 'admin-anterior-prueba', 'rol' => 'admin_municipal'];
+    $_SESSION['usuario'] = ['ci' => $cuentas['admin_municipal'], 'rol' => 'admin_municipal'];
     session_write_close();
     $sesionAnterior = session_id();
     $sesionesAnteriores[] = $sesionAnterior;
@@ -77,7 +79,7 @@ try {
     session_id('');
     session_name('PHPSESSID');
     session_start();
-    $_SESSION['usuario'] = ['ci' => 'peon-anterior-prueba', 'rol' => 'peon'];
+    $_SESSION['usuario'] = ['ci' => $cuentas['peon'], 'rol' => 'peon'];
     session_write_close();
     $sesionPeonAnterior = session_id();
     $sesionesAnteriores[] = $sesionPeonAnterior;
@@ -109,6 +111,7 @@ try {
         session_destroy();
         session_write_close();
     }
+    eliminarCuentasPrueba($conexion, $cuentas);
 }
 
 if ($correcto) {

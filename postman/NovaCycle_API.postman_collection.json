@@ -9,6 +9,7 @@
     { "key": "email", "value": "" },
     { "key": "password", "value": "" },
     { "key": "pestana", "value": "" },
+    { "key": "ciUsuario", "value": "" },
     { "key": "idIncidencia", "value": "" },
     { "key": "idContenedor", "value": "" }
   ],
@@ -48,6 +49,36 @@
               }
             }
           ]
+        }
+      ]
+    },
+    {
+      "name": "Usuarios (Administrador)",
+      "item": [
+        {
+          "name": "Listar usuarios",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/Api_Usuarios/api_usuarios.php?accion=listar_usuarios"
+          }
+        },
+        {
+          "name": "Modificar usuario",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"ci\":\"{{ciUsuario}}\",\"nombre\":\"Nombre\",\"apellido\":\"Apellido\",\"email\":\"correo@example.com\",\"rol\":\"peon\"}" },
+            "url": "{{baseUrl}}/Api_Usuarios/api_usuarios.php?accion=modificar_usuario"
+          }
+        },
+        {
+          "name": "Eliminar usuario",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"ci\":\"{{ciUsuario}}\"}" },
+            "url": "{{baseUrl}}/Api_Usuarios/api_usuarios.php?accion=eliminar_usuario"
+          }
         }
       ]
     },

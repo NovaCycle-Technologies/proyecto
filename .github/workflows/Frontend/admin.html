@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Administración | NovaCycle Tech</title>
-    <link rel="stylesheet" href="admin.css?v=3" />
+    <link rel="stylesheet" href="admin.css?v=7" />
   </head>
 
   <body>
@@ -17,11 +17,28 @@
       <a href="index.html">Volver al inicio</a>
     </header>
 
-    <main>
-      <h1>Panel de administración</h1>
-      <p class="descripcion">Administrá usuarios, contenedores y camiones del sistema.</p>
+    <div class="layout-admin">
+      <aside class="barra-admin">
+        <p class="barra-admin-etiqueta">ESPACIO DE TRABAJO</p>
+        <strong>Administración</strong>
+        <nav class="navegacion-admin" aria-label="Secciones de administración">
+          <a href="#vista-resumen" data-seccion="resumen"><span aria-hidden="true">R</span> Resumen</a>
+          <a href="#vista-usuarios" data-seccion="usuarios"><span aria-hidden="true">U</span> Usuarios</a>
+          <a href="#vista-contenedores" data-seccion="contenedores"><span aria-hidden="true">C</span> Contenedores</a>
+          <a href="#vista-camiones" data-seccion="camiones"><span aria-hidden="true">F</span> Camiones</a>
+          <a href="#vista-rutas" data-seccion="rutas"><span aria-hidden="true">↗</span> Rutas y cuadrillas</a>
+        </nav>
+        <p class="barra-admin-ayuda">Elegí una sección para trabajar sin perderte en una página larga.</p>
+      </aside>
 
-      <section id="alertas">
+      <main id="contenidoAdmin">
+        <div class="encabezado-admin">
+          <p class="encabezado-etiqueta">PANEL MUNICIPAL</p>
+          <h1 id="tituloSeccion">Resumen general</h1>
+          <p id="descripcionSeccion" class="descripcion">Alertas y datos de la jornada en un solo lugar.</p>
+        </div>
+
+      <section id="alertas" class="panel-admin" data-panel="resumen">
         <h2>Alertas activas</h2>
         <p>Incidencias sin cerrar y contenedores que necesitan atención.</p>
         <div id="alertasDashboard" class="alertas-dashboard" aria-live="polite">
@@ -29,7 +46,7 @@
         </div>
       </section>
 
-      <section id="usuarios">
+      <section id="usuarios" class="panel-admin" data-panel="usuarios">
         <h2>Solicitudes de usuarios</h2>
         <p>Aprobá a los trabajadores pendientes y confirmá el puesto que tendrán en el sistema.</p>
 
@@ -48,9 +65,46 @@
           </thead>
           <tbody></tbody>
         </table>
+
+        <h3>Usuarios registrados</h3>
+        <p>Modificá los datos de una cuenta o eliminá una que no tenga actividad registrada.</p>
+        <p id="mensajeUsuariosRegistrados" class="mensaje" role="status">Cargando usuarios...</p>
+        <table id="tablaUsuariosRegistrados" hidden>
+          <thead>
+            <tr>
+              <th>CI</th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Estado</th>
+              <th>Rol</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+
+        <form id="formUsuario" hidden>
+          <h3>Modificar usuario</h3>
+          <label for="ciUsuario">CI</label>
+          <input id="ciUsuario" readonly />
+          <label for="nombreUsuario">Nombre</label>
+          <input id="nombreUsuario" maxlength="30" required />
+          <label for="apellidoUsuario">Apellido</label>
+          <input id="apellidoUsuario" maxlength="30" required />
+          <label for="emailUsuario">Correo</label>
+          <input id="emailUsuario" type="email" maxlength="30" required />
+          <label for="rolUsuario">Rol</label>
+          <select id="rolUsuario" required>
+            <option value="peon">Peón</option>
+            <option value="conductor">Conductor</option>
+            <option value="operario">Operario</option>
+          </select>
+          <button type="submit">Guardar cambios</button>
+          <button type="button" id="cancelarUsuario">Cancelar</button>
+        </form>
       </section>
 
-      <section id="contenedores">
+      <section id="contenedores" class="panel-admin" data-panel="contenedores">
         <h2>Gestión de contenedores</h2>
         <p>Creá, modificá o da de baja contenedores.</p>
 
@@ -124,7 +178,7 @@
         </table>
       </section>
 
-      <section id="camiones">
+      <section id="camiones" class="panel-admin" data-panel="camiones">
         <h2>Gestión de camiones</h2>
         <p>Registrá, modificá o da de baja los camiones de recolección. Los que tienen una ruta vigente no se pueden editar ni dar de baja.</p>
 
@@ -169,7 +223,7 @@
         </table>
       </section>
 
-      <section id="rutas">
+      <section id="rutas" class="panel-admin" data-panel="rutas">
         <h2>Rutas y cuadrillas</h2>
         <p>
           Creá una ruta, agregá los contenedores que debe recorrer y asigná el camión y trabajadores
@@ -220,7 +274,7 @@
         <p id="mensajeRutas" class="mensaje"></p>
       </section>
 
-      <section id="reportes">
+      <section id="reportes" class="panel-admin" data-panel="resumen">
         <h2>Dashboard operativo</h2>
         <p>Resumen de la jornada, la flota y el estado de los contenedores.</p>
         <button type="button" id="btnActualizarDashboard">Actualizar datos</button>
@@ -239,7 +293,8 @@
         <h3>Detalle de la jornada</h3>
         <p id="reporteAdmin" class="mensaje">Cargando reporte...</p>
       </section>
-    </main>
+      </main>
+    </div>
 
     <script src="sesion.js?v=2"></script>
     <script>
@@ -359,6 +414,7 @@
         const datos = await respuesta.json();
         mensajeUsuarios.textContent = datos.mensaje;
         cargarPendientes();
+        if (datos.ok) cargarUsuariosRegistrados();
       }
 
       async function cargarContenedores() {
@@ -644,6 +700,8 @@
       cargarContenedores();
       cargarCamiones();
     </script>
+    <script src="admin-navegacion.js?v=2"></script>
+    <script src="admin-usuarios.js?v=1"></script>
     <script src="admin-operaciones.js?v=2"></script>
     <script src="admin-dashboard.js?v=3"></script>
   </body>

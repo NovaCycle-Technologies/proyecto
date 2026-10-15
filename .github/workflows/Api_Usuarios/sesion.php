@@ -42,6 +42,7 @@ function iniciarSesionActual(): void
                 session_id($cookie);
                 session_start();
                 if (($_SESSION['usuario']['rol'] ?? null) === $rol) {
+                    validarCuentaSesion();
                     return;
                 }
                 session_write_close();
@@ -55,6 +56,7 @@ function iniciarSesionActual(): void
         // Debe tener prioridad sobre las cookies nuevas de otras pestañas.
         if (isset($_COOKIE[session_name()])) {
             session_start();
+            validarCuentaSesion();
             return;
         }
 
@@ -72,6 +74,7 @@ function iniciarSesionActual(): void
         } else {
             // Compatibilidad con sesiones anteriores y una sola sesión de Postman.
             session_start();
+            validarCuentaSesion();
             return;
         }
     }
@@ -83,6 +86,41 @@ function iniciarSesionActual(): void
         session_id($cookie);
     }
     session_start();
+    validarCuentaSesion();
+}
+
+function validarCuentaSesion(): void
+{
+    $usuario = $_SESSION['usuario'] ?? null;
+    if (!is_array($usuario) || !isset($usuario['ci'], $usuario['rol'])) {
+        return;
+    }
+
+    try {
+        $conexion = new PDO('mysql:host=localhost;dbname=novacycle;charset=utf8mb4', 'root', '');
+        $consulta = $conexion->prepare(
+            "SELECT u.estado_cuenta,
+                    CASE WHEN a.ci IS NOT NULL THEN 'admin_municipal'
+                         WHEN p.ci IS NOT NULL THEN 'peon'
+                         WHEN c.ci IS NOT NULL THEN 'conductor'
+                         WHEN o.ci IS NOT NULL THEN 'operario'
+                         ELSE NULL END AS rol
+             FROM usuarios u
+             LEFT JOIN admins a ON a.ci = u.CI
+             LEFT JOIN peones p ON p.ci = u.CI
+             LEFT JOIN conductores c ON c.ci = u.CI
+             LEFT JOIN operarios o ON o.ci = u.CI
+             WHERE u.CI = ?"
+        );
+        $consulta->execute([(string) $usuario['ci']]);
+        $cuenta = $consulta->fetch(PDO::FETCH_ASSOC);
+    } catch (Throwable $error) {
+        $cuenta = false;
+    }
+
+    if (!$cuenta || $cuenta['estado_cuenta'] !== 'aprobado' || $cuenta['rol'] !== $usuario['rol']) {
+        unset($_SESSION['usuario']);
+    }
 }
 
 function crearSesionUsuario(array $usuario): string

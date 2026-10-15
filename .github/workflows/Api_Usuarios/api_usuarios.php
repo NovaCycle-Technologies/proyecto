@@ -33,15 +33,19 @@ if ($accion === 'registrar') {
     if ($resultado['ok']) {
         $resultado['pestana'] = crearSesionUsuario($resultado['usuario']);
     }
-} elseif ($accion === 'listar_pendientes' || $accion === 'aprobar_usuario') {
+} elseif (in_array($accion, ['listar_pendientes', 'aprobar_usuario', 'listar_usuarios', 'modificar_usuario', 'eliminar_usuario'], true)) {
     iniciarSesionActual();
     if (($_SESSION['usuario']['rol'] ?? '') !== 'admin_municipal') {
         $resultado = ['ok' => false, 'mensaje' => 'Solo el administrador municipal puede realizar esta acción.'];
         responder($resultado, 403);
     }
-    $resultado = $accion === 'listar_pendientes'
-        ? $controlador->listarPendientes()
-        : $controlador->aprobarUsuario($datos);
+    $resultado = match ($accion) {
+        'listar_pendientes' => $controlador->listarPendientes(),
+        'aprobar_usuario' => $controlador->aprobarUsuario($datos),
+        'listar_usuarios' => $controlador->listarUsuarios(),
+        'modificar_usuario' => $controlador->modificarUsuario($datos),
+        'eliminar_usuario' => $controlador->eliminarUsuario($datos, (string) ($_SESSION['usuario']['ci'] ?? ''))
+    };
 } else {
     responder(['ok' => false, 'mensaje' => 'Acción no encontrada.'], 404);
 }
