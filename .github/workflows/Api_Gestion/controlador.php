@@ -7,6 +7,7 @@ class ControladorContenedores
 {
     private ModeloContenedores $modelo;
     private const ESTADOS = ['funcional', 'roto', 'desbordado'];
+    private const MENSAJE_EN_USO = 'El contenedor pertenece a una ruta activa. No se puede editar ni dar de baja mientras la ruta siga activa.';
 
     public function __construct()
     {
@@ -39,6 +40,12 @@ class ControladorContenedores
 
     public function actualizar(int $id, array $datos): array
     {
+        if ($id <= 0) {
+            return ['ok' => false, 'mensaje' => 'El contenedor no es válido.'];
+        }
+        if ($this->modelo->estaEnUso($id)) {
+            return ['ok' => false, 'en_uso' => true, 'mensaje' => self::MENSAJE_EN_USO];
+        }
         $validacion = $this->validar($datos);
         if (!$validacion['ok']) {
             return $validacion;
@@ -51,6 +58,12 @@ class ControladorContenedores
 
     public function darDeBaja(int $id): array
     {
+        if ($id <= 0) {
+            return ['ok' => false, 'mensaje' => 'El contenedor no es válido.'];
+        }
+        if ($this->modelo->estaEnUso($id)) {
+            return ['ok' => false, 'en_uso' => true, 'mensaje' => self::MENSAJE_EN_USO];
+        }
         if (!$this->modelo->darDeBaja($id)) {
             return ['ok' => false, 'mensaje' => 'No se pudo dar de baja el contenedor.'];
         }

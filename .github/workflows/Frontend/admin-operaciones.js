@@ -94,7 +94,7 @@ btnEliminarRuta.addEventListener('click', async () => {
   try {
     mensajeRutas.textContent = (await apiAdmin('eliminar_ruta', { id_ruta: ruta.id_ruta })).mensaje;
     limpiarEdicionRuta();
-    await cargarAsignaciones();
+    await Promise.all([cargarAsignaciones(), cargarContenedores()]);
   } catch (error) {
     mensajeRutas.textContent = error.message;
   }
@@ -111,6 +111,7 @@ formParada.addEventListener('submit', async (e) => {
       })
     ).mensaje;
     formulario.reset();
+    await cargarContenedores();
   } catch (error) {
     mensajeRutas.textContent = error.message;
   }

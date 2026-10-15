@@ -106,7 +106,7 @@
 
       <section id="contenedores" class="panel-admin" data-panel="contenedores">
         <h2>Gestión de contenedores</h2>
-        <p>Creá, modificá o da de baja contenedores.</p>
+        <p>Creá, modificá o da de baja contenedores. Los que están en una ruta activa no se pueden editar ni dar de baja.</p>
 
         <form id="formContenedor">
           <input type="hidden" id="idContenedor" />
@@ -171,6 +171,7 @@
               <th>Estado</th>
               <th>Residuo</th>
               <th>Capacidad</th>
+              <th>Uso</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -441,6 +442,7 @@
 
           datos.contenedores.forEach(function (contenedor) {
             const fila = document.createElement('tr');
+            const enUso = Number(contenedor.en_uso) === 1;
 
             fila.innerHTML = `
             <td>${contenedor.id_contenedor}</td>
@@ -448,9 +450,10 @@
             <td>${textoSeguro(contenedor.estado)}</td>
             <td>${textoSeguro(contenedor.tipo_residuo)}</td>
             <td>${contenedor.capacidad_litros} L</td>
+            <td>${enUso ? 'En ruta activa' : 'Libre'}</td>
             <td>
-              <button type="button" class="editar">Editar</button>
-              <button type="button" class="baja">Dar de baja</button>
+              <button type="button" class="editar" ${enUso ? 'disabled title="Contenedor incluido en una ruta activa"' : ''}>Editar</button>
+              <button type="button" class="baja" ${enUso ? 'disabled title="Contenedor incluido en una ruta activa"' : ''}>Dar de baja</button>
             </td>
           `;
 
@@ -507,10 +510,18 @@
         if (resultado.ok) {
           limpiarFormulario();
           cargarContenedores();
+        } else if (resultado.en_uso) {
+          limpiarFormulario();
+          await cargarContenedores();
+          mensajeContenedores.textContent = resultado.mensaje;
         }
       });
 
       function editarContenedor(contenedor) {
+        if (Number(contenedor.en_uso) === 1) {
+          mensajeContenedores.textContent = 'El contenedor está en una ruta activa y no se puede editar.';
+          return;
+        }
         idContenedor.value = contenedor.id_contenedor;
         document.getElementById('calle').value = contenedor.calle;
         document.getElementById('numero').value = contenedor.numero;
@@ -547,6 +558,9 @@
 
         if (resultado.ok) {
           cargarContenedores();
+        } else if (resultado.en_uso) {
+          await cargarContenedores();
+          mensajeContenedores.textContent = resultado.mensaje;
         }
       }
 
@@ -702,7 +716,7 @@
     </script>
     <script src="admin-navegacion.js?v=2"></script>
     <script src="admin-usuarios.js?v=1"></script>
-    <script src="admin-operaciones.js?v=2"></script>
+    <script src="admin-operaciones.js?v=3"></script>
     <script src="admin-dashboard.js?v=3"></script>
   </body>
 </html>
