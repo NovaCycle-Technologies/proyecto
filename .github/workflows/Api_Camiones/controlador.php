@@ -7,6 +7,7 @@ class ControladorCamiones
 {
     private ModeloCamiones $modelo;
     private const ESTADOS = ['disponible', 'en_mantenimiento', 'fuera_de_servicio'];
+    private const MENSAJE_EN_USO = 'El camión está asignado a una ruta vigente. No se puede editar ni dar de baja hasta que termine la asignación.';
 
     public function __construct()
     {
@@ -25,14 +26,24 @@ class ControladorCamiones
             return $validacion;
         }
 
-        $id = $this->modelo->crear($validacion['camion']);
-        return ['ok' => true, 'mensaje' => 'Camión registrado correctamente.', 'id_camion' => $id];
+        $resultado = $this->modelo->crear($validacion['camion']);
+        if (!$resultado['ok']) {
+            return $resultado;
+        }
+
+        $resultado['mensaje'] = $resultado['reactivado']
+            ? 'Camión reactivado correctamente; se conservaron sus datos históricos.'
+            : 'Camión registrado correctamente.';
+        return $resultado;
     }
 
     public function actualizar(int $id, array $datos): array
     {
         if ($id <= 0) {
             return ['ok' => false, 'mensaje' => 'El camión no es válido.'];
+        }
+        if ($this->modelo->estaEnUso($id)) {
+            return ['ok' => false, 'en_uso' => true, 'mensaje' => self::MENSAJE_EN_USO];
         }
 
         $validacion = $this->validar($datos);
@@ -48,6 +59,12 @@ class ControladorCamiones
 
     public function darDeBaja(int $id): array
     {
+        if ($id <= 0) {
+            return ['ok' => false, 'mensaje' => 'El camión no es válido.'];
+        }
+        if ($this->modelo->estaEnUso($id)) {
+            return ['ok' => false, 'en_uso' => true, 'mensaje' => self::MENSAJE_EN_USO];
+        }
         if (!$this->modelo->darDeBaja($id)) {
             return ['ok' => false, 'mensaje' => 'No se pudo dar de baja el camión.'];
         }
