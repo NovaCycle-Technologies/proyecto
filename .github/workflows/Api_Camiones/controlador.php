@@ -26,8 +26,15 @@ class ControladorCamiones
             return $validacion;
         }
 
-        $id = $this->modelo->crear($validacion['camion']);
-        return ['ok' => true, 'mensaje' => 'Camión registrado correctamente.', 'id_camion' => $id];
+        $resultado = $this->modelo->crear($validacion['camion']);
+        if (!$resultado['ok']) {
+            return $resultado;
+        }
+
+        $resultado['mensaje'] = $resultado['reactivado']
+            ? 'Camión reactivado correctamente; se conservaron sus datos históricos.'
+            : 'Camión registrado correctamente.';
+        return $resultado;
     }
 
     public function actualizar(int $id, array $datos): array

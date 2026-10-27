@@ -181,7 +181,7 @@
 
       <section id="camiones" class="panel-admin" data-panel="camiones">
         <h2>Gestión de camiones</h2>
-        <p>Registrá, modificá o da de baja los camiones de recolección. Los que tienen una ruta vigente no se pueden editar ni dar de baja.</p>
+        <p>Registrá, modificá o da de baja los camiones de recolección. Los que tienen una ruta vigente no se pueden editar ni dar de baja. Si registrás una matrícula dada de baja, se reactiva ese camión con los datos nuevos.</p>
 
         <form id="formCamion">
           <input type="hidden" id="idCamion" />
@@ -415,7 +415,10 @@
         const datos = await respuesta.json();
         mensajeUsuarios.textContent = datos.mensaje;
         cargarPendientes();
-        if (datos.ok) cargarUsuariosRegistrados();
+        if (datos.ok) {
+          await Promise.allSettled([cargarUsuariosRegistrados(), cargarAsignaciones()]);
+          mensajeUsuarios.textContent = datos.mensaje;
+        }
       }
 
       async function cargarContenedores() {
@@ -509,7 +512,8 @@
 
         if (resultado.ok) {
           limpiarFormulario();
-          cargarContenedores();
+          await Promise.allSettled([cargarContenedores(), cargarAsignaciones(), cargarDashboard()]);
+          mensajeContenedores.textContent = resultado.mensaje;
         } else if (resultado.en_uso) {
           limpiarFormulario();
           await cargarContenedores();
@@ -557,7 +561,8 @@
         mensajeContenedores.textContent = resultado.mensaje;
 
         if (resultado.ok) {
-          cargarContenedores();
+          await Promise.allSettled([cargarContenedores(), cargarAsignaciones(), cargarDashboard()]);
+          mensajeContenedores.textContent = resultado.mensaje;
         } else if (resultado.en_uso) {
           await cargarContenedores();
           mensajeContenedores.textContent = resultado.mensaje;
@@ -661,7 +666,8 @@
 
         if (resultado.ok) {
           limpiarFormularioCamion();
-          cargarCamiones();
+          await Promise.allSettled([cargarCamiones(), cargarAsignaciones(), cargarDashboard()]);
+          mensajeCamiones.textContent = resultado.mensaje;
         }
       });
 
@@ -706,7 +712,8 @@
         mensajeCamiones.textContent = resultado.mensaje;
 
         if (resultado.ok) {
-          cargarCamiones();
+          await Promise.allSettled([cargarCamiones(), cargarAsignaciones(), cargarDashboard()]);
+          mensajeCamiones.textContent = resultado.mensaje;
         }
       }
 
@@ -715,7 +722,7 @@
       cargarCamiones();
     </script>
     <script src="admin-navegacion.js?v=2"></script>
-    <script src="admin-usuarios.js?v=1"></script>
+    <script src="admin-usuarios.js?v=2"></script>
     <script src="admin-operaciones.js?v=3"></script>
     <script src="admin-dashboard.js?v=3"></script>
   </body>

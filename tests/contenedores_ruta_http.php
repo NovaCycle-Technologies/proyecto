@@ -86,9 +86,26 @@ try {
     if ($estado !== 200 || !($resultado['ok'] ?? false)) {
         throw new RuntimeException('No se pudo editar el contenedor después de desactivar la ruta.');
     }
+    $consultarContenedor = $conexion->prepare('SELECT calle, numero, activo FROM contenedores WHERE id_contenedor = ?');
+    $consultarContenedor->execute([$contenedor]);
+    $guardado = $consultarContenedor->fetch(PDO::FETCH_ASSOC);
+    if ($guardado['calle'] !== 'Calle modificada' || $guardado['numero'] !== '2' || (int) $guardado['activo'] !== 1) {
+        throw new RuntimeException('La edición del contenedor no se guardó en MySQL.');
+    }
     [$estado, $resultado] = solicitarContenedor('baja', 'DELETE', $pestana, $sesion, $contenedor);
     if ($estado !== 200 || !($resultado['ok'] ?? false)) {
         throw new RuntimeException('No se pudo dar de baja el contenedor después de desactivar la ruta.');
+    }
+    $consultarContenedor->execute([$contenedor]);
+    $guardado = $consultarContenedor->fetch(PDO::FETCH_ASSOC);
+    if ((int) $guardado['activo'] !== 0) {
+        throw new RuntimeException('La baja lógica del contenedor no se guardó en MySQL.');
+    }
+    [$estado, $listado] = solicitarContenedor('listar', 'GET', $pestana, $sesion);
+    foreach ($listado['contenedores'] as $item) {
+        if ((int) $item['id_contenedor'] === $contenedor) {
+            throw new RuntimeException('El contenedor dado de baja sigue apareciendo en la API.');
+        }
     }
 } finally {
     if ($ruta !== null) {

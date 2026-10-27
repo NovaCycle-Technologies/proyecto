@@ -41,19 +41,56 @@ class ModeloCamiones
         return (bool) $consulta->fetchColumn();
     }
 
-    public function crear(array $camion): int
+    public function crear(array $camion): array
     {
-        $consulta = $this->conexion->prepare(
-            'INSERT INTO camiones (matricula, modelo, capacidad_kg, estado)
-             VALUES (?, ?, ?, ?)'
-        );
-        $consulta->execute([
-            $camion['matricula'],
-            $camion['modelo'],
-            $camion['capacidad_kg'],
-            $camion['estado']
-        ]);
-        return (int) $this->conexion->lastInsertId();
+        $this->conexion->beginTransaction();
+        try {
+            $buscar = $this->conexion->prepare(
+                'SELECT id_camion, activo FROM camiones WHERE matricula = ? FOR UPDATE'
+            );
+            $buscar->execute([$camion['matricula']]);
+            $existente = $buscar->fetch(PDO::FETCH_ASSOC);
+
+            if ($existente !== false) {
+                if ((int) $existente['activo'] === 1) {
+                    $this->conexion->rollBack();
+                    return ['ok' => false, 'mensaje' => 'Ya existe un camión activo con esa matrícula.'];
+                }
+
+                $reactivar = $this->conexion->prepare(
+                    'UPDATE camiones c
+                     SET modelo = ?, capacidad_kg = ?, estado = ?, activo = 1
+                     WHERE c.id_camion = ? AND c.activo = 0
+                       AND NOT EXISTS (' . self::RUTA_VIGENTE . ')'
+                );
+                $reactivar->execute([
+                    $camion['modelo'], $camion['capacidad_kg'], $camion['estado'], $existente['id_camion']
+                ]);
+                if ($reactivar->rowCount() !== 1) {
+                    $this->conexion->rollBack();
+                    return ['ok' => false, 'mensaje' => 'No se puede reactivar un camión asignado a una ruta vigente.'];
+                }
+
+                $this->conexion->commit();
+                return ['ok' => true, 'id_camion' => (int) $existente['id_camion'], 'reactivado' => true];
+            }
+
+            $insertar = $this->conexion->prepare(
+                'INSERT INTO camiones (matricula, modelo, capacidad_kg, estado)
+                 VALUES (?, ?, ?, ?)'
+            );
+            $insertar->execute([
+                $camion['matricula'], $camion['modelo'], $camion['capacidad_kg'], $camion['estado']
+            ]);
+            $id = (int) $this->conexion->lastInsertId();
+            $this->conexion->commit();
+            return ['ok' => true, 'id_camion' => $id, 'reactivado' => false];
+        } catch (Throwable $error) {
+            if ($this->conexion->inTransaction()) {
+                $this->conexion->rollBack();
+            }
+            throw $error;
+        }
     }
 
     public function actualizar(int $id, array $camion): bool

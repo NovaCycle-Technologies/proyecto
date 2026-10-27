@@ -80,7 +80,7 @@ async function eliminarUsuarioRegistrado(usuario) {
     if (!respuesta.ok || !datos.ok) throw new Error(datos.mensaje || 'No se pudo eliminar el usuario.');
 
     if (document.getElementById('ciUsuario').value === usuario.ci) cerrarEdicionUsuario();
-    await Promise.all([cargarUsuariosRegistrados(), cargarPendientes()]);
+    await Promise.allSettled([cargarUsuariosRegistrados(), cargarPendientes(), cargarAsignaciones()]);
     mensajeUsuariosRegistrados.textContent = datos.mensaje;
   } catch (error) {
     mensajeUsuariosRegistrados.textContent = error.message;
@@ -106,7 +106,7 @@ formUsuario.addEventListener('submit', async (evento) => {
     if (!respuesta.ok || !datos.ok) throw new Error(datos.mensaje || 'No se pudo modificar el usuario.');
 
     cerrarEdicionUsuario();
-    await Promise.all([cargarUsuariosRegistrados(), cargarPendientes()]);
+    await Promise.allSettled([cargarUsuariosRegistrados(), cargarPendientes(), cargarAsignaciones()]);
     mensajeUsuariosRegistrados.textContent = datos.mensaje;
   } catch (error) {
     mensajeUsuariosRegistrados.textContent = error.message;

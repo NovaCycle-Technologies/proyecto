@@ -135,6 +135,18 @@ try {
     if (count($editado) !== 1 || $editado[0]['nombre'] !== 'Nombre editado' || $editado[0]['rol'] !== 'conductor') {
         throw new RuntimeException('La edición de datos o rol no quedó guardada.');
     }
+    $consultarUsuario = $conexion->prepare('SELECT Nombre, Email, rol_solicitado FROM usuarios WHERE CI = ?');
+    $consultarUsuario->execute([$ciPrueba]);
+    $guardado = $consultarUsuario->fetch(PDO::FETCH_ASSOC);
+    $consultarConductor = $conexion->prepare('SELECT 1 FROM conductores WHERE ci = ?');
+    $consultarConductor->execute([$ciPrueba]);
+    $consultarPeon = $conexion->prepare('SELECT 1 FROM peones WHERE ci = ?');
+    $consultarPeon->execute([$ciPrueba]);
+    if ($guardado['Nombre'] !== 'Nombre editado' || $guardado['Email'] !== $correoPrueba
+        || $guardado['rol_solicitado'] !== 'conductor' || !$consultarConductor->fetchColumn()
+        || $consultarPeon->fetchColumn()) {
+        throw new RuntimeException('La edición del usuario o de su rol no se guardó en MySQL.');
+    }
     $pestanaConductorTemporal = crearSesionUsuario(['ci' => $ciPrueba, 'rol' => 'conductor']);
     $sesionConductorTemporal = session_id();
     $sesiones['conductor_temporal'] = [$pestanaConductorTemporal, $sesionConductorTemporal];
@@ -143,6 +155,11 @@ try {
     }
     if (!(solicitarUsuarios('eliminar_usuario', $adminTab, $adminSesion, ['ci' => $ciPrueba])['ok'] ?? false)) {
         throw new RuntimeException('No se pudo eliminar el usuario temporal.');
+    }
+    $consultarUsuario->execute([$ciPrueba]);
+    $consultarConductor->execute([$ciPrueba]);
+    if ($consultarUsuario->fetchColumn() !== false || $consultarConductor->fetchColumn() !== false) {
+        throw new RuntimeException('La baja del usuario no se aplicó en MySQL.');
     }
     if (consultarRuta($pestanaConductorTemporal, $sesionConductorTemporal)['ok'] ?? true) {
         throw new RuntimeException('La cuenta eliminada conservó acceso con una sesión abierta.');

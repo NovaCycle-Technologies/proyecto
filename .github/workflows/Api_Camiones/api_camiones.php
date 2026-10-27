@@ -40,7 +40,7 @@ try {
 
     if ($metodo === 'POST' && $accion === 'crear') {
         $resultado = $controlador->crear($datos);
-        responder($resultado, $resultado['ok'] ? 201 : 400);
+        responder($resultado, $resultado['ok'] ? (($resultado['reactivado'] ?? false) ? 200 : 201) : 400);
     }
 
     if ($metodo === 'PUT' && $accion === 'actualizar') {
