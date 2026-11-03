@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../Api_Usuarios/sesion.php';
 iniciarSesionActual();
-require_once __DIR__ . '/Controlador.php';
+require_once __DIR__ . '/controlador.php';
 
 header('Content-Type: application/json; charset=utf-8');
 

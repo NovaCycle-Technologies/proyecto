@@ -1,10 +1,11 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/../.github/workflows/conexion.php';
+
 function crearCuentasPrueba(array $roles): array
 {
-    $conexion = new PDO('mysql:host=localhost;dbname=novacycle;charset=utf8mb4', 'root', '');
-    $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $conexion = conectarBaseDeDatos();
     $cuentas = [];
     $tablas = [
         'admin_municipal' => 'admins',

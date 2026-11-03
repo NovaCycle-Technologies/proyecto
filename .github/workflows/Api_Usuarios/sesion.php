@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/../conexion.php';
+
 function nombreSesionPestana(string $pestana): string
 {
     return 'NC_' . $pestana;
@@ -97,7 +99,7 @@ function validarCuentaSesion(): void
     }
 
     try {
-        $conexion = new PDO('mysql:host=localhost;dbname=novacycle;charset=utf8mb4', 'root', '');
+        $conexion = conectarBaseDeDatos();
         $consulta = $conexion->prepare(
             "SELECT u.estado_cuenta,
                     CASE WHEN a.ci IS NOT NULL THEN 'admin_municipal'

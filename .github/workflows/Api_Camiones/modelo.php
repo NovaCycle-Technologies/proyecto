@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/../conexion.php';
+
 class ModeloCamiones
 {
     private PDO $conexion;
@@ -14,12 +16,7 @@ class ModeloCamiones
 
     public function __construct()
     {
-        $this->conexion = new PDO(
-            'mysql:host=localhost;dbname=novacycle;charset=utf8mb4',
-            'root',
-            ''
-        );
-        $this->conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $this->conexion = conectarBaseDeDatos();
     }
 
     public function listar(): array

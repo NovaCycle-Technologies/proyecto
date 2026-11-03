@@ -1,0 +1,34 @@
+services:
+  web:
+    build: .
+    ports:
+      - "${APP_PORT:-8080}:80"
+    environment:
+      DB_HOST: db
+      DB_NAME: novacycle
+      DB_USER: novacycle
+      DB_PASSWORD: ${DB_PASSWORD:?Definí DB_PASSWORD en .env}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mariadb:11.4
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:?Definí MARIADB_ROOT_PASSWORD en .env}
+      MARIADB_DATABASE: novacycle
+      MARIADB_USER: novacycle
+      MARIADB_PASSWORD: ${DB_PASSWORD:?Definí DB_PASSWORD en .env}
+      TZ: America/Montevideo
+    volumes:
+      - datos_mariadb:/var/lib/mysql
+      - ./database/esquema_inicial.sql:/docker-entrypoint-initdb.d/01-esquema.sql:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+volumes:
+  datos_mariadb:
