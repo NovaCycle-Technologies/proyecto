@@ -5,9 +5,9 @@ require_once __DIR__ . '/modelo.php';
 class ControladorOperaciones
 {
     private ModeloOperaciones $modelo;
-    public function __construct()
+    public function __construct(?ModeloOperaciones $modelo = null)
     {
-        $this->modelo = new ModeloOperaciones();
+        $this->modelo = $modelo ?? new ModeloOperaciones();
     }
     public function camiones(): array
     {
@@ -197,7 +197,7 @@ class ControladorOperaciones
             $ci,
         )
             ? ['ok' => true, 'mensaje' => 'Parada registrada como completada.']
-            : ['ok' => false, 'mensaje' => 'La parada ya estaba completada.'];
+            : ['ok' => false, 'mensaje' => 'No se pudo completar la parada. Verificá que pertenezca a tu ruta de hoy y que no esté completada.'];
     }
     public function reporteAdmin(): array
     {

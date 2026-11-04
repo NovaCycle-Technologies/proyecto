@@ -28,6 +28,9 @@ docker compose exec -u www-data web php tests/sesiones_http.php
 docker compose exec -u www-data web php tests/usuarios_http.php
 docker compose exec -u www-data web php tests/contenedores_ruta_http.php
 docker compose exec -u www-data web php tests/camiones_db_http.php
+docker compose exec -u www-data web php tests/rutas_recoleccion_http.php
+docker compose exec -u www-data web php tests/incidencias_http.php
+docker compose exec web php tests/operaciones_unitarias.php
 ```
 
 La colección `postman/NovaCycle_API.postman_collection.json` sirve para probar las API manualmente. Para Docker, usá el puerto indicado en `APP_PORT`.

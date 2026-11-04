@@ -259,9 +259,17 @@ class ModeloOperaciones
     public function completarParada(int $asignacion, int $parada, string $ci): bool
     {
         $consulta = $this->conexion->prepare(
-            'INSERT IGNORE INTO recolecciones (id_asignacion, id_parada, ci_trabajador) VALUES (?, ?, ?)',
+            "INSERT IGNORE INTO recolecciones (id_asignacion, id_parada, ci_trabajador)
+             SELECT a.id_asignacion, p.id_parada, ?
+             FROM asignaciones_ruta a
+             INNER JOIN paradas_ruta p ON p.id_ruta = a.id_ruta
+             INNER JOIN rutas r ON r.id_ruta = a.id_ruta
+             WHERE a.id_asignacion = ? AND p.id_parada = ?
+               AND a.fecha = CURDATE() AND a.estado IN ('asignada', 'en_curso')
+               AND r.activa = 1
+               AND (a.ci_peon = ? OR a.ci_conductor = ?)",
         );
-        $consulta->execute([$asignacion, $parada, $ci]);
+        $consulta->execute([$ci, $asignacion, $parada, $ci, $ci]);
         return $consulta->rowCount() === 1;
     }
     public function reporteAdmin(): array
