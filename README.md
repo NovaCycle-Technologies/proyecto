@@ -9,15 +9,15 @@ Proyecto PHP, JavaScript y MariaDB para gestionar recolección, rutas, camiones,
 3. Ejecutá `docker compose up --build -d`.
 4. Abrí `http://localhost:8080/Proyecto/proyecto/.github/workflows/Frontend/index.html` (o cambiá `8080` por `APP_PORT`).
 
-La base se crea vacía a partir de `database/esquema_inicial.sql`. No se copian datos de XAMPP ni usuarios reales. Docker guarda los datos en un volumen para conservarlos al detener los contenedores.
+En una instalación nueva, Docker carga automáticamente `database/datos_demo.sql`, con los usuarios, camiones, contenedores, rutas e incidencias de prueba. Podés iniciar sesión con las credenciales que usabas en XAMPP. El archivo `.env` sigue siendo local y contiene las contraseñas de la base de datos, no las de los usuarios.
 
-### Crear el primer administrador
+La carga automática ocurre **solo la primera vez**, cuando el volumen de MariaDB está vacío. Actualizar el archivo SQL no reemplaza una base de Docker que ya tiene datos. Docker conserva los datos al detener los contenedores: usá `docker compose down` y no `docker compose down -v` si querés conservarlos. Las asignaciones de ruta mantienen las fechas del respaldo; para mostrar una ruta en el mapa durante la defensa, asignala para ese día.
 
-1. Abrí la página de registro y creá una cuenta con tus propios datos y contraseña. El puesto solicitado puede ser cualquiera; todavía no tendrá permisos.
-2. Ejecutá `docker compose exec web php scripts/crear_admin.php TU_CI` con la CI que registraste. Este comando sólo funciona si aún no existe un administrador.
-3. Iniciá sesión con el correo y la contraseña que elegiste. Desde el panel podrás aprobar las demás cuentas.
+### Administrador
 
-No hay una contraseña de administrador predefinida en el repositorio. Guardá `.env` fuera de Git; está ignorado automáticamente.
+La base de prueba ya incluye un administrador. Iniciá sesión con el correo y la contraseña de esa cuenta. Si creás otra base sin administrador, registrá una cuenta y ejecutá `docker compose exec web php scripts/crear_admin.php TU_CI` con su CI. Ese comando sólo funciona cuando aún no existe un administrador.
+
+No hay una contraseña de administrador en texto claro en el repositorio. Guardá `.env` fuera de Git; está ignorado automáticamente.
 
 ### Probar dentro de Docker
 
