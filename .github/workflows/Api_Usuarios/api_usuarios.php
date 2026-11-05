@@ -33,6 +33,10 @@ if ($accion === 'registrar') {
     if ($resultado['ok']) {
         $resultado['pestana'] = crearSesionUsuario($resultado['usuario']);
     }
+} elseif ($accion === 'cerrar_sesion') {
+    $resultado = cerrarSesionActual()
+        ? ['ok' => true, 'mensaje' => 'Sesión cerrada.']
+        : ['ok' => false, 'mensaje' => 'No se pudo identificar la sesión.'];
 } elseif (in_array($accion, ['listar_pendientes', 'aprobar_usuario', 'listar_usuarios', 'modificar_usuario', 'eliminar_usuario'], true)) {
     iniciarSesionActual();
     if (($_SESSION['usuario']['rol'] ?? '') !== 'admin_municipal') {

@@ -34,6 +34,24 @@ function solicitar(string $accion, string $pestana, string $sesion, string $cook
     return json_decode($cuerpo, true, 512, JSON_THROW_ON_ERROR);
 }
 
+function cerrarSesionHttp(string $pestana, string $sesion): array
+{
+    $url = 'http://localhost/Proyecto/proyecto/.github/workflows/Api_Usuarios/api_usuarios.php?accion=cerrar_sesion';
+    $cabeceras = 'Cookie: ' . nombreSesionPestana($pestana) . '=' . $sesion . "\r\n";
+    $cabeceras .= 'X-NovaCycle-Tab: ' . $pestana . "\r\n";
+    $contexto = stream_context_create(['http' => [
+        'method' => 'POST',
+        'header' => $cabeceras,
+        'ignore_errors' => true,
+        'timeout' => 5,
+    ]]);
+    $cuerpo = file_get_contents($url, false, $contexto);
+    if ($cuerpo === false) {
+        throw new RuntimeException('No se pudo cerrar la sesión de prueba.');
+    }
+    return json_decode($cuerpo, true, 512, JSON_THROW_ON_ERROR);
+}
+
 $sesiones = [];
 $sesionesAnteriores = [];
 $correcto = false;
@@ -93,6 +111,16 @@ try {
     }
     if (!(solicitar('mi_ruta', '', '', $cookies, 'peon')['ok'] ?? false)) {
         throw new RuntimeException('El peón perdió permisos al volver del administrador.');
+    }
+
+    if (!(cerrarSesionHttp($peonTab, $peonSesion)['ok'] ?? false)) {
+        throw new RuntimeException('No se pudo cerrar la sesión del peón.');
+    }
+    if (solicitar('mi_ruta', $peonTab, $peonSesion)['ok'] ?? false) {
+        throw new RuntimeException('La sesión del peón siguió activa después de cerrarla.');
+    }
+    if (!(solicitar('dashboard_admin', $adminTab, $adminSesion)['ok'] ?? false)) {
+        throw new RuntimeException('Cerrar la sesión del peón afectó al administrador.');
     }
 
     $correcto = true;

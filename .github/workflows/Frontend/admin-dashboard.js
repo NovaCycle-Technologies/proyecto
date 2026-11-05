@@ -67,7 +67,7 @@ async function cargarDashboard() {
     });
     const resultado = await respuesta.json();
     if (!respuesta.ok || !resultado.ok)
-      throw new Error(resultado.mensaje || 'No se pudo cargar el dashboard.');
+      throw new Error(resultado.mensaje || 'No se pudieron cargar las estadísticas.');
     const { jornada, contenedores, camiones } = resultado.dashboard;
     mostrarAlertas(jornada, contenedores);
     dashboardMetricas.innerHTML = [

@@ -148,9 +148,18 @@ class ModeloOperaciones
 
     public function rutas(): array
     {
-        return $this->conexion
+        $rutas = $this->conexion
             ->query('SELECT id_ruta, nombre, zona FROM rutas WHERE activa = 1 ORDER BY nombre')
             ->fetchAll(PDO::FETCH_ASSOC);
+        $consulta = $this->conexion->prepare(
+            'SELECT id_parada, orden, ubicacion, descripcion
+             FROM paradas_ruta WHERE id_ruta = ? ORDER BY orden, id_parada'
+        );
+        foreach ($rutas as &$ruta) {
+            $consulta->execute([$ruta['id_ruta']]);
+            $ruta['paradas'] = $consulta->fetchAll(PDO::FETCH_ASSOC);
+        }
+        return $rutas;
     }
     public function contenedores(): array
     {

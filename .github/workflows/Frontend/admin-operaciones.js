@@ -18,6 +18,31 @@ function opciones(elemento, datos, valor, texto) {
     '<option value="">Sin datos disponibles</option>';
 }
 let rutasActivas = [];
+
+function mostrarParadasRuta() {
+  const ruta = rutasActivas.find((item) => String(item.id_ruta) === rutaParada.value);
+  listaParadasRuta.replaceChildren();
+  if (!ruta || ruta.paradas.length === 0) {
+    const aviso = document.createElement('li');
+    aviso.textContent = ruta ? 'Esta ruta todavía no tiene contenedores.' : 'Seleccioná una ruta para ver sus paradas.';
+    listaParadasRuta.appendChild(aviso);
+    ordenParada.value = 1;
+    return;
+  }
+  ruta.paradas.forEach((parada) => {
+    const item = document.createElement('li');
+    item.textContent = `${parada.ubicacion} · ${parada.descripcion} (orden ${parada.orden})`;
+    listaParadasRuta.appendChild(item);
+  });
+  ordenParada.value = Math.max(...ruta.paradas.map((parada) => Number(parada.orden))) + 1;
+}
+
+function establecerFechaAsignacion() {
+  const ahora = new Date();
+  const fechaLocal = new Date(ahora.getTime() - ahora.getTimezoneOffset() * 60000);
+  fechaAsignacion.value = fechaLocal.toISOString().slice(0, 10);
+}
+
 function limpiarEdicionRuta() {
   formRuta.reset();
   idRutaAdmin.value = '';
@@ -25,6 +50,11 @@ function limpiarEdicionRuta() {
   btnCancelarRuta.hidden = true;
 }
 async function cargarAsignaciones() {
+  const seleccion = {
+    parada: rutaParada.value,
+    asignacion: rutaAsignacion.value,
+    gestion: rutaGestion.value
+  };
   const [rutas, camiones, conductores, peones, contenedores] = await Promise.all([
     apiAdmin('rutas'),
     apiAdmin('camiones'),
@@ -36,6 +66,10 @@ async function cargarAsignaciones() {
   opciones(rutaParada, rutas.rutas, 'id_ruta', 'nombre');
   opciones(rutaAsignacion, rutas.rutas, 'id_ruta', 'nombre');
   opciones(rutaGestion, rutas.rutas, 'id_ruta', 'nombre');
+  if (seleccion.parada) rutaParada.value = seleccion.parada;
+  if (seleccion.asignacion) rutaAsignacion.value = seleccion.asignacion;
+  if (seleccion.gestion) rutaGestion.value = seleccion.gestion;
+  mostrarParadasRuta();
   contenedorParada.innerHTML =
     contenedores.contenedores
       .map(
@@ -61,6 +95,12 @@ formRuta.addEventListener('submit', async (e) => {
     mensajeRutas.textContent = resultado.mensaje;
     limpiarEdicionRuta();
     await cargarAsignaciones();
+    if (!editando) {
+      rutaParada.value = resultado.id_ruta;
+      rutaAsignacion.value = resultado.id_ruta;
+      rutaGestion.value = resultado.id_ruta;
+      mostrarParadasRuta();
+    }
   } catch (error) {
     mensajeRutas.textContent = error.message;
   }
@@ -79,6 +119,7 @@ btnEditarRuta.addEventListener('click', () => {
   formRuta.scrollIntoView({ behavior: 'smooth', block: 'center' });
 });
 btnCancelarRuta.addEventListener('click', limpiarEdicionRuta);
+rutaParada.addEventListener('change', mostrarParadasRuta);
 btnEliminarRuta.addEventListener('click', async () => {
   const ruta = rutasActivas.find((item) => String(item.id_ruta) === rutaGestion.value);
   if (!ruta) {
@@ -103,6 +144,7 @@ formParada.addEventListener('submit', async (e) => {
   const formulario = e.currentTarget;
   e.preventDefault();
   try {
+    const rutaSeleccionada = rutaParada.value;
     mensajeRutas.textContent = (
       await apiAdmin('crear_parada', {
         id_ruta: rutaParada.value,
@@ -111,6 +153,9 @@ formParada.addEventListener('submit', async (e) => {
       })
     ).mensaje;
     formulario.reset();
+    rutaParada.value = rutaSeleccionada;
+    await cargarAsignaciones();
+    rutaAsignacion.value = rutaSeleccionada;
     await cargarContenedores();
   } catch (error) {
     mensajeRutas.textContent = error.message;
@@ -130,6 +175,7 @@ formAsignacion.addEventListener('submit', async (e) => {
       })
     ).mensaje;
     formulario.reset();
+    establecerFechaAsignacion();
   } catch (error) {
     mensajeRutas.textContent = error.message;
   }
@@ -141,7 +187,7 @@ apiAdmin('reporte_admin')
   .catch((error) => {
     reporteAdmin.textContent = error.message;
   });
-fechaAsignacion.value = new Date().toISOString().slice(0, 10);
+establecerFechaAsignacion();
 cargarAsignaciones().catch((error) => {
   mensajeRutas.textContent = error.message;
 });

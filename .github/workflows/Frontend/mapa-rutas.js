@@ -36,7 +36,7 @@ async function dibujarRuta(ruta, color) {
   L.circleMarker(puntos[0], { radius: 8, color, fillColor: color, fillOpacity: 1 })
     .bindPopup(`<strong>Inicio: ${textoSeguro(ruta.nombre)}</strong>`)
     .addTo(mapaRutas);
-  if (puntos.length < 2) return puntos;
+  if (puntos.length < 2) return;
 
   const coordenadas = puntos.map(([latitud, longitud]) => `${longitud},${latitud}`).join(';');
   const respuesta = await fetch(
@@ -44,6 +44,9 @@ async function dibujarRuta(ruta, color) {
   );
   if (!respuesta.ok) throw new Error('No fue posible calcular un recorrido vial.');
   const datos = await respuesta.json();
+  if (!datos?.routes?.[0]?.geometry?.coordinates?.length) {
+    throw new Error('No se encontró un camino entre las paradas.');
+  }
 
   L.geoJSON(
     { type: 'LineString', coordinates: datos.routes[0].geometry.coordinates },
@@ -53,8 +56,6 @@ async function dibujarRuta(ruta, color) {
       `<strong>${textoSeguro(ruta.nombre)}</strong><br>Camión: ${textoSeguro(ruta.matricula)}`
     )
     .addTo(mapaRutas);
-
-  return puntos;
 }
 
 async function cargarRutasPublicas() {
@@ -97,10 +98,11 @@ async function cargarRutasPublicas() {
   leyendaRutasMapa.innerHTML += '<li>Azul: contenedor · Rojo: incidencia abierta</li>';
 
   for (const [indice, ruta] of rutasOperativas.entries()) {
+    puntos.push(...ruta.paradas.map((parada) => [Number(parada.latitud), Number(parada.longitud)]));
     try {
-      puntos.push(...(await dibujarRuta(ruta, coloresRuta[indice % coloresRuta.length])));
+      await dibujarRuta(ruta, coloresRuta[indice % coloresRuta.length]);
     } catch (error) {
-      leyendaRutasMapa.innerHTML += `<li>No se pudo trazar por calles ${textoSeguro(ruta.nombre)}.</li>`;
+      leyendaRutasMapa.innerHTML += `<li>${textoSeguro(ruta.nombre)}: las paradas están visibles, pero no se pudo trazar el camino por calles.</li>`;
     }
   }
   if (puntos.length)

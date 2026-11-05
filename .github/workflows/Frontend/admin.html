@@ -14,12 +14,12 @@
         <span>Panel de administración municipal</span>
       </div>
 
-      <a href="index.html">Volver al inicio</a>
+      <a href="index.html" data-cerrar-sesion>Cerrar sesión</a>
     </header>
 
     <div class="layout-admin">
       <aside class="barra-admin">
-        <p class="barra-admin-etiqueta">ESPACIO DE TRABAJO</p>
+        <p class="barra-admin-etiqueta">NOVACYCLE TECH</p>
         <strong>Administración</strong>
         <nav class="navegacion-admin" aria-label="Secciones de administración">
           <a href="#vista-resumen" data-seccion="resumen"><span aria-hidden="true">R</span> Resumen</a>
@@ -28,12 +28,12 @@
           <a href="#vista-camiones" data-seccion="camiones"><span aria-hidden="true">F</span> Camiones</a>
           <a href="#vista-rutas" data-seccion="rutas"><span aria-hidden="true">↗</span> Rutas y cuadrillas</a>
         </nav>
-        <p class="barra-admin-ayuda">Elegí una sección para trabajar sin perderte en una página larga.</p>
+        <p class="barra-admin-ayuda">Seleccioná una sección para ver sus opciones.</p>
       </aside>
 
       <main id="contenidoAdmin">
         <div class="encabezado-admin">
-          <p class="encabezado-etiqueta">PANEL MUNICIPAL</p>
+          <p class="encabezado-etiqueta">ADMINISTRACIÓN</p>
           <h1 id="tituloSeccion">Resumen general</h1>
           <p id="descripcionSeccion" class="descripcion">Alertas y datos de la jornada en un solo lugar.</p>
         </div>
@@ -258,6 +258,10 @@
             Agregar contenedor a la ruta
           </button>
         </form>
+        <div class="resumen-paradas">
+          <h3>Paradas de la ruta seleccionada</h3>
+          <ol id="listaParadasRuta"><li>Seleccioná una ruta para ver sus paradas.</li></ol>
+        </div>
         <form id="formAsignacion">
           <label for="rutaAsignacion">Ruta</label
           ><select id="rutaAsignacion" required></select
@@ -276,7 +280,7 @@
       </section>
 
       <section id="reportes" class="panel-admin" data-panel="resumen">
-        <h2>Dashboard operativo</h2>
+        <h2>Estadísticas</h2>
         <p>Resumen de la jornada, la flota y el estado de los contenedores.</p>
         <button type="button" id="btnActualizarDashboard">Actualizar datos</button>
         <div id="dashboardMetricas" class="dashboard-metricas" aria-live="polite"></div>
@@ -290,14 +294,14 @@
             <div id="graficoCamiones" class="grafico-barras"></div>
           </article>
         </div>
-        <p id="mensajeDashboard" class="mensaje">Cargando dashboard...</p>
+        <p id="mensajeDashboard" class="mensaje">Cargando estadísticas...</p>
         <h3>Detalle de la jornada</h3>
         <p id="reporteAdmin" class="mensaje">Cargando reporte...</p>
       </section>
       </main>
     </div>
 
-    <script src="sesion.js?v=2"></script>
+    <script src="sesion.js?v=3"></script>
     <script>
       const apiUsuarios = '/Proyecto/proyecto/.github/workflows/Api_Usuarios/api_usuarios.php';
 
@@ -723,7 +727,7 @@
     </script>
     <script src="admin-navegacion.js?v=2"></script>
     <script src="admin-usuarios.js?v=2"></script>
-    <script src="admin-operaciones.js?v=3"></script>
-    <script src="admin-dashboard.js?v=3"></script>
+    <script src="admin-operaciones.js?v=4"></script>
+    <script src="admin-dashboard.js?v=4"></script>
   </body>
 </html>

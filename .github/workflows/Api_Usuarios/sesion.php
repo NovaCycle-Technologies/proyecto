@@ -138,3 +138,25 @@ function crearSesionUsuario(array $usuario): string
 
     return $pestana;
 }
+
+function cerrarSesionActual(): bool
+{
+    iniciarSesionActual();
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        return false;
+    }
+
+    $cookie = session_get_cookie_params();
+    $nombre = session_name();
+    $_SESSION = [];
+    session_destroy();
+    setcookie($nombre, '', [
+        'expires' => time() - 3600,
+        'path' => $cookie['path'],
+        'domain' => $cookie['domain'],
+        'secure' => $cookie['secure'],
+        'httponly' => $cookie['httponly'],
+        'samesite' => $cookie['samesite'] ?? 'Lax',
+    ]);
+    return true;
+}

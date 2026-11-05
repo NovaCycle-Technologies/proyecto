@@ -4,15 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Operario | NovaCycle Tech</title>
-    <link rel="stylesheet" href="operario.css?v=2" />
+    <link rel="stylesheet" href="operario.css?v=3" />
   </head>
   <body>
     <header class="barra-superior">
       <div><strong>♻ NovaCycle Tech</strong><span>Gestión de residuos urbanos</span></div>
-      <a href="index.html">Cerrar sesión</a>
+      <a href="index.html" data-cerrar-sesion>Cerrar sesión</a>
     </header>
     <main>
-      <p class="etiqueta">PANEL DE OPERARIO</p>
+      <p class="etiqueta">OPERARIO</p>
       <h1 id="saludo">Centro de acopio</h1>
       <p class="descripcion">
         Controlá el ingreso de residuos, el estado de la maquinaria y las tareas de la cuadrilla.
@@ -25,9 +25,6 @@
         <article>
           <span>Ingresos de hoy</span><strong id="totalIngresos">0 kg</strong
           ><small id="camionesRecibidos">0 camiones recibidos</small>
-        </article>
-        <article>
-          <span>Capacidad utilizada</span><strong>68%</strong><small>Centro de acopio Norte</small>
         </article>
         <article>
           <span>Incidencias abiertas</span><strong id="totalIncidencias">0</strong
@@ -77,10 +74,9 @@
       <section class="panel">
         <div class="titulo-seccion">
           <div>
-            <h2>Cuadrillas y rutas asignadas</h2>
-            <p>Seguimiento de los equipos que reportan al centro.</p>
+            <h2>Camiones registrados</h2>
+            <p>Consultá los vehículos y su estado actual.</p>
           </div>
-          <span>Turno mañana</span>
         </div>
         <div class="tabla-contenedor">
           <table>
@@ -112,7 +108,7 @@
         </ul>
       </section>
     </main>
-    <script src="sesion.js?v=2"></script>
+    <script src="sesion.js?v=3"></script>
     <script src="operario.js?v=5"></script>
   </body>
 </html>

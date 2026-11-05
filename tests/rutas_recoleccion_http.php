@@ -91,6 +91,14 @@ try {
         throw new RuntimeException('La parada no quedó vinculada al contenedor con coordenadas.');
     }
     $idParada = (int) $parada['id_parada'];
+    [$estado, $resultado] = solicitarOperacion('rutas', 'GET', $sesiones['admin_municipal']);
+    $rutaConParadas = array_values(array_filter(
+        $resultado['rutas'],
+        fn (array $item): bool => (int) $item['id_ruta'] === $ruta
+    ));
+    if ($estado !== 200 || (int) ($rutaConParadas[0]['paradas'][0]['id_parada'] ?? 0) !== $idParada) {
+        throw new RuntimeException('El listado administrativo no muestra las paradas de la ruta.');
+    }
 
     [$estado, $resultado] = solicitarOperacion('crear_ruta', 'POST', $sesiones['admin_municipal'], [
         'nombre' => $nombre . ' ajena', 'zona' => 'Zona prueba'

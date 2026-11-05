@@ -79,7 +79,7 @@ h2 {
   gap: 18px;
 }
 .resumen {
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   margin: 28px 0;
 }
 .resumen article,
@@ -139,13 +139,6 @@ button {
 }
 .titulo-seccion h2 {
   margin-bottom: 5px;
-}
-.titulo-seccion > span {
-  background: #e1f1e6;
-  border-radius: 999px;
-  color: var(--verde);
-  font-weight: bold;
-  padding: 8px 12px;
 }
 .tabla-contenedor {
   overflow-x: auto;
