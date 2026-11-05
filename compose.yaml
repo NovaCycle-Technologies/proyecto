@@ -12,6 +12,17 @@ services:
       db:
         condition: service_healthy
 
+  phpmyadmin:
+    image: phpmyadmin:5.2
+    ports:
+      - "127.0.0.1:${PHPMYADMIN_PORT:-8081}:80"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+    depends_on:
+      db:
+        condition: service_healthy
+
   db:
     image: mariadb:11.4
     environment:

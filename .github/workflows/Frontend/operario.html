@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Operario | NovaCycle Tech</title>
-    <link rel="stylesheet" href="operario.css?v=3" />
+    <link rel="stylesheet" href="operario.css?v=5" />
   </head>
   <body>
     <header class="barra-superior">
@@ -12,12 +12,14 @@
       <a href="index.html" data-cerrar-sesion>Cerrar sesión</a>
     </header>
     <main>
-      <p class="etiqueta">OPERARIO</p>
-      <h1 id="saludo">Centro de acopio</h1>
-      <p class="descripcion">
-        Controlá el ingreso de residuos, el estado de la maquinaria y las tareas de la cuadrilla.
-      </p>
-      <section class="panel" aria-live="polite">
+      <div class="portada-panel">
+        <p class="etiqueta">OPERARIO</p>
+        <h1 id="saludo">Centro de acopio</h1>
+        <p class="descripcion">
+          Controlá el ingreso de residuos, el estado de la maquinaria y las tareas de la cuadrilla.
+        </p>
+      </div>
+      <section class="panel panel-alertas" aria-live="polite">
         <h2>Alertas activas</h2>
         <div id="alertasOperario" class="alertas-operario">Consultando incidencias...</div>
       </section>

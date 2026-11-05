@@ -1,10 +1,10 @@
 :root {
-    --verde: #147447;
-    --verde-oscuro: #0f4b35;
-    --texto: #1d3027;
-    --secundario: #5d7064;
-    --borde: #cfddd0;
-    --fondo: #f2f7ef;
+    --verde: #176845;
+    --verde-oscuro: #153c2e;
+    --texto: #23392d;
+    --secundario: #5d7062;
+    --borde: #d9e5d9;
+    --fondo: #f5f7f3;
 }
 * { box-sizing: border-box; }
 body {
@@ -12,7 +12,7 @@ body {
     min-height: 100vh;
     background: var(--fondo);
     color: var(--texto);
-    font-family: Arial, sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 a { color: var(--verde); }
 .auth-header {

@@ -9,6 +9,8 @@ Proyecto PHP, JavaScript y MariaDB para gestionar recolección, rutas, camiones,
 3. Ejecutá `docker compose up --build -d`.
 4. Abrí `http://localhost:8080/Proyecto/proyecto/.github/workflows/Frontend/index.html` (o cambiá `8080` por `APP_PORT`).
 
+Para ver la base de datos en el navegador, abrí `http://localhost:8081` (o el puerto de `PHPMYADMIN_PORT`). Entrá con el usuario `novacycle` y la contraseña `DB_PASSWORD` de tu archivo `.env`. Seleccioná la base `novacycle`: en `usuarios` están las cuentas y en `operarios` las CI de quienes tienen ese rol. phpMyAdmin sólo está disponible desde esta computadora, no desde otras de la red.
+
 En una instalación nueva, Docker carga automáticamente `database/datos_demo.sql`, con los usuarios, camiones, contenedores, rutas e incidencias de prueba. Podés iniciar sesión con las credenciales que usabas en XAMPP. El archivo `.env` sigue siendo local y contiene las contraseñas de la base de datos, no las de los usuarios.
 
 La carga automática ocurre **solo la primera vez**, cuando el volumen de MariaDB está vacío. Actualizar el archivo SQL no reemplaza una base de Docker que ya tiene datos. Docker conserva los datos al detener los contenedores: usá `docker compose down` y no `docker compose down -v` si querés conservarlos. Las asignaciones de ruta mantienen las fechas del respaldo; para mostrar una ruta en el mapa durante la defensa, asignala para ese día.
