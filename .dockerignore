@@ -1,0 +1,5 @@
+.git
+.env
+database/local/
+.codex
+.agents

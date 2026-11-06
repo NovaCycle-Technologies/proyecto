@@ -2,13 +2,16 @@ USE novacycle;
 
 CREATE TABLE IF NOT EXISTS incidencias (
   id_incidencia INT AUTO_INCREMENT PRIMARY KEY,
+  id_contenedor INT NULL,
   ci_reportante VARCHAR(20) NOT NULL,
   ubicacion VARCHAR(150) NOT NULL,
   tipo VARCHAR(80) NOT NULL,
   detalle TEXT NOT NULL,
-  estado ENUM('pendiente', 'revisada') NOT NULL DEFAULT 'pendiente',
+  estado ENUM('pendiente', 'revisada', 'cerrada') NOT NULL DEFAULT 'pendiente',
   fecha_reporte DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  fecha_revision DATETIME NULL
+  fecha_revision DATETIME NULL,
+  fecha_cierre DATETIME NULL,
+  CONSTRAINT fk_incidencia_contenedor FOREIGN KEY (id_contenedor) REFERENCES contenedores(id_contenedor)
 );
 
 CREATE TABLE IF NOT EXISTS ingresos_residuos (
@@ -41,12 +44,15 @@ CREATE TABLE IF NOT EXISTS rutas (
 CREATE TABLE IF NOT EXISTS paradas_ruta (
   id_parada INT AUTO_INCREMENT PRIMARY KEY,
   id_ruta INT NOT NULL,
+  id_contenedor INT NULL,
   ubicacion VARCHAR(150) NOT NULL,
   descripcion VARCHAR(150) NOT NULL,
   orden INT NOT NULL,
   latitud DECIMAL(10, 7) NULL,
   longitud DECIMAL(10, 7) NULL,
-  CONSTRAINT fk_parada_ruta FOREIGN KEY (id_ruta) REFERENCES rutas(id_ruta) ON DELETE CASCADE
+  UNIQUE KEY unica_parada_contenedor (id_ruta, id_contenedor),
+  CONSTRAINT fk_parada_ruta FOREIGN KEY (id_ruta) REFERENCES rutas(id_ruta) ON DELETE CASCADE,
+  CONSTRAINT fk_parada_contenedor FOREIGN KEY (id_contenedor) REFERENCES contenedores(id_contenedor)
 );
 
 CREATE TABLE IF NOT EXISTS asignaciones_ruta (
