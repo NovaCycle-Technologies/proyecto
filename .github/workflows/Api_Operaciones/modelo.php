@@ -95,12 +95,17 @@ class ModeloOperaciones
         return $consulta->rowCount() === 1;
     }
 
-    public function actualizarCamion(int $id, string $estado): bool
+    public function actualizarCamion(int $id, string $estado, string $ci): bool
     {
         $consulta = $this->conexion->prepare(
-            'UPDATE camiones SET estado = ? WHERE id_camion = ? AND activo = 1',
+            'UPDATE camiones SET estado = ?
+             WHERE id_camion = ? AND activo = 1
+               AND EXISTS (
+                   SELECT 1 FROM asignaciones_ruta
+                   WHERE id_camion = ? AND ci_conductor = ? AND fecha = CURDATE()
+               )',
         );
-        $consulta->execute([$estado, $id]);
+        $consulta->execute([$estado, $id, $id, $ci]);
         return $consulta->rowCount() === 1;
     }
 

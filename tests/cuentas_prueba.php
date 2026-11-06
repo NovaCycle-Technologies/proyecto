@@ -1,6 +1,11 @@
 <?php
 declare(strict_types=1);
 
+if (getenv('NOVACYCLE_TEST_ISOLATED') !== '1') {
+    fwrite(STDERR, "Usá una base de pruebas aislada y definí NOVACYCLE_TEST_ISOLATED=1.\n");
+    exit(1);
+}
+
 require_once __DIR__ . '/../.github/workflows/conexion.php';
 
 function crearCuentasPrueba(array $roles): array

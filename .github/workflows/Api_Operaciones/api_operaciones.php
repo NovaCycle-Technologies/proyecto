@@ -80,15 +80,18 @@ try {
     }
     if ($metodo === 'POST' && $accion === 'revisar_incidencia') {
         permitir(['operario']);
-        responder($controlador->revisarIncidencia($datos));
+        $resultado = $controlador->revisarIncidencia($datos);
+        responder($resultado, $resultado['ok'] ? 200 : 400);
     }
     if ($metodo === 'POST' && $accion === 'estado_camion') {
         permitir(['conductor']);
-        responder($controlador->estadoCamion($datos));
+        $resultado = $controlador->estadoCamion($datos, $ci);
+        responder($resultado, $resultado['ok'] ? 200 : 400);
     }
     if ($metodo === 'POST' && $accion === 'ingreso') {
         permitir(['operario']);
-        responder($controlador->ingreso($datos, $ci), 201);
+        $resultado = $controlador->ingreso($datos, $ci);
+        responder($resultado, $resultado['ok'] ? 201 : 400);
     }
     if ($metodo === 'POST' && $accion === 'cerrar_incidencia') {
         permitir(['operario']);
@@ -97,31 +100,38 @@ try {
     }
     if ($metodo === 'POST' && $accion === 'maquinaria') {
         permitir(['operario']);
-        responder($controlador->maquinaria($datos, $ci));
+        $resultado = $controlador->maquinaria($datos, $ci);
+        responder($resultado, $resultado['ok'] ? 200 : 400);
     }
     if ($metodo === 'POST' && $accion === 'crear_ruta') {
         permitir(['admin_municipal']);
-        responder($controlador->crearRuta($datos), 201);
+        $resultado = $controlador->crearRuta($datos);
+        responder($resultado, $resultado['ok'] ? 201 : 400);
     }
     if ($metodo === 'POST' && $accion === 'actualizar_ruta') {
         permitir(['admin_municipal']);
-        responder($controlador->actualizarRuta($datos));
+        $resultado = $controlador->actualizarRuta($datos);
+        responder($resultado, $resultado['ok'] ? 200 : 400);
     }
     if ($metodo === 'POST' && $accion === 'eliminar_ruta') {
         permitir(['admin_municipal']);
-        responder($controlador->eliminarRuta($datos));
+        $resultado = $controlador->eliminarRuta($datos);
+        responder($resultado, $resultado['ok'] ? 200 : 400);
     }
     if ($metodo === 'POST' && $accion === 'crear_parada') {
         permitir(['admin_municipal']);
-        responder($controlador->crearParada($datos), 201);
+        $resultado = $controlador->crearParada($datos);
+        responder($resultado, $resultado['ok'] ? 201 : 400);
     }
     if ($metodo === 'POST' && $accion === 'asignar_ruta') {
         permitir(['admin_municipal']);
-        responder($controlador->asignarRuta($datos), 201);
+        $resultado = $controlador->asignarRuta($datos);
+        responder($resultado, $resultado['ok'] ? 201 : 400);
     }
     if ($metodo === 'POST' && $accion === 'completar_parada') {
         permitir(['peon', 'conductor']);
-        responder($controlador->completarParada($datos, $ci));
+        $resultado = $controlador->completarParada($datos, $ci);
+        responder($resultado, $resultado['ok'] ? 200 : 400);
     }
     responder(['ok' => false, 'mensaje' => 'Ruta no encontrada.'], 404);
 } catch (Throwable $error) {

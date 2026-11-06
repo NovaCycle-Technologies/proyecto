@@ -71,16 +71,16 @@ class ControladorOperaciones
             ? ['ok' => true, 'mensaje' => 'Incidencia cerrada correctamente.']
             : ['ok' => false, 'mensaje' => 'La incidencia no existe o ya está cerrada.'];
     }
-    public function estadoCamion(array $datos): array
+    public function estadoCamion(array $datos, string $ci): array
     {
         $estado = $datos['estado'] ?? '';
         $id = (int) ($datos['id_camion'] ?? 0);
         if (!in_array($estado, ['disponible', 'en_mantenimiento', 'fuera_de_servicio'], true)) {
             return ['ok' => false, 'mensaje' => 'Estado de camión no válido.'];
         }
-        return $this->modelo->actualizarCamion($id, $estado)
+        return $this->modelo->actualizarCamion($id, $estado, $ci)
             ? ['ok' => true, 'mensaje' => 'Estado del camión actualizado.']
-            : ['ok' => false, 'mensaje' => 'No se pudo actualizar el camión.'];
+            : ['ok' => false, 'mensaje' => 'No se pudo actualizar el camión. Verificá que esté asignado a tu ruta de hoy.'];
     }
     public function ingreso(array $datos, string $ci): array
     {

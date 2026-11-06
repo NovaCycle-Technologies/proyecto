@@ -21,21 +21,11 @@ La base de prueba ya incluye un administrador. Iniciá sesión con el correo y l
 
 No hay una contraseña de administrador en texto claro en el repositorio. Guardá `.env` fuera de Git; está ignorado automáticamente.
 
-### Probar dentro de Docker
+### Testing y validación
 
-Con los contenedores en marcha, ejecutá:
+El plan, los casos, la matriz de requisitos, los resultados y los defectos están en `docs/testing/`. Empezá por `docs/testing/informe_ejecucion.md`: incluye el paso a paso para crear una **copia Docker aislada** y ejecutar los 15 scripts. No ejecutes las pruebas HTTP sobre la base habitual; crean datos temporales y por seguridad exigen `NOVACYCLE_TEST_ISOLATED=1`. Las pruebas unitarias pueden ejecutarse sin servidor con `C:\xampp\php\php.exe tests\operaciones_unitarias.php`, `tests\usuarios_unitarias.php` y `tests\crud_unitarias.php`.
 
-```text
-docker compose exec -u www-data web php tests/sesiones_http.php
-docker compose exec -u www-data web php tests/usuarios_http.php
-docker compose exec -u www-data web php tests/contenedores_ruta_http.php
-docker compose exec -u www-data web php tests/camiones_db_http.php
-docker compose exec -u www-data web php tests/rutas_recoleccion_http.php
-docker compose exec -u www-data web php tests/incidencias_http.php
-docker compose exec web php tests/operaciones_unitarias.php
-```
-
-La colección `postman/NovaCycle_API.postman_collection.json` sirve para probar las API manualmente. Para Docker, usá el puerto indicado en `APP_PORT`.
+La colección `postman/NovaCycle_API.postman_collection.json` sirve para explorar las API manualmente. La validación de pantallas y experiencia de usuarios se documenta aparte; no se considera aprobada solo porque los scripts pasen.
 
 ## Seguir usando XAMPP
 

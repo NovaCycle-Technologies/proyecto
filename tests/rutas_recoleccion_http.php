@@ -147,13 +147,13 @@ try {
     [$estado, $resultado] = solicitarOperacion('completar_parada', 'POST', $sesiones['peon_ajeno'], [
         'id_asignacion' => $asignacion, 'id_parada' => $idParada
     ]);
-    if ($estado !== 200 || ($resultado['ok'] ?? true)) {
+    if ($estado !== 400 || ($resultado['ok'] ?? true)) {
         throw new RuntimeException('Un peón ajeno pudo completar una parada de otra cuadrilla.');
     }
     [$estado, $resultado] = solicitarOperacion('completar_parada', 'POST', $sesiones['peon'], [
         'id_asignacion' => $asignacion, 'id_parada' => $idParadaAjena
     ]);
-    if ($estado !== 200 || ($resultado['ok'] ?? true)) {
+    if ($estado !== 400 || ($resultado['ok'] ?? true)) {
         throw new RuntimeException('Se pudo completar una parada que no pertenece a la ruta asignada.');
     }
     [$estado, $resultado] = solicitarOperacion('completar_parada', 'POST', $sesiones['peon'], [
